@@ -5,9 +5,10 @@ interface CoursesPageProps {
   onNavigate: (page: string, data?: any) => void;
 }
 
-export function CoursesPage({ onNavigate }: CoursesPageProps) {
-  const filteredCourses = courses;
+// IDs de cursos activos (solo Pastelería Saludable por ahora)
+const ACTIVE_COURSE_IDS = [1];
 
+export function CoursesPage({ onNavigate }: CoursesPageProps) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
@@ -25,14 +26,15 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
       {/* Courses Grid */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-sm text-gray-600 mb-6">
-          {filteredCourses.length} {filteredCourses.length === 1 ? 'curso encontrado' : 'cursos encontrados'}
+          {courses.length} {courses.length === 1 ? 'curso encontrado' : 'cursos encontrados'}
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredCourses.map(course => (
-            <CourseCard 
-              key={course.id} 
-              course={course} 
+          {courses.map(course => (
+            <CourseCard
+              key={course.id}
+              course={course}
               onViewCourse={(slug) => onNavigate('course', { slug })}
+              comingSoon={!ACTIVE_COURSE_IDS.includes(course.id)}
             />
           ))}
         </div>
