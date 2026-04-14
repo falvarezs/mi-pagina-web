@@ -36,10 +36,8 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
 
   const totalLessons = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
 
-
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Breadcrumb */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center text-sm text-gray-600">
@@ -54,9 +52,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Main Content */}
           <div className="lg:col-span-2">
-            {/* Video Trailer */}
             <div className="bg-black rounded-2xl overflow-hidden shadow-xl mb-8 aspect-video">
               <iframe 
                 src={course.trailerUrl}
@@ -66,12 +62,10 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
               ></iframe>
             </div>
 
-            {/* Course Info */}
             <div className="bg-white rounded-2xl shadow-md p-8 mb-8">
               <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                 {course.title}
               </h1>
-
               <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-6">
                 <div className="flex items-center">
                   <svg className="w-5 h-5 text-yellow-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
@@ -99,17 +93,11 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                   <span>{totalLessons} lecciones</span>
                 </div>
               </div>
-
-              <p className="text-lg text-gray-700 leading-relaxed">
-                {course.fullDescription}
-              </p>
+              <p className="text-lg text-gray-700 leading-relaxed">{course.fullDescription}</p>
             </div>
 
-            {/* What You'll Learn */}
             <div className="bg-white rounded-2xl shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                ¿Qué aprenderás?
-              </h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">¿Qué aprenderás?</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 {course.whatYouLearn.map((item, idx) => (
                   <div key={idx} className="flex items-start">
@@ -122,11 +110,8 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
               </div>
             </div>
 
-            {/* Course Content */}
             <div className="bg-white rounded-2xl shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Contenido del Curso
-              </h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Contenido del Curso</h2>
               <div className="space-y-3">
                 {course.modules.map((module) => (
                   <div key={module.id} className="border border-gray-200 rounded-lg overflow-hidden">
@@ -142,7 +127,6 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                       </div>
                       <span className="text-sm text-gray-500">{module.lessons.length} lecciones</span>
                     </button>
-                    
                     {openModules.includes(module.id) && (
                       <div className="bg-gray-50 border-t border-gray-200">
                         {module.lessons.map((lesson) => (
@@ -164,11 +148,8 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
               </div>
             </div>
 
-            {/* What's Included */}
             <div className="bg-white rounded-2xl shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Qué incluye este curso
-              </h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Qué incluye este curso</h2>
               <div className="grid md:grid-cols-2 gap-4">
                 {course.includes.map((item, idx) => (
                   <div key={idx} className="flex items-start">
@@ -181,11 +162,8 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
               </div>
             </div>
 
-            {/* Instructor */}
             <div className="bg-white rounded-2xl shadow-md p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">
-                Tu Instructora
-              </h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tu Instructora</h2>
               <div className="flex items-start space-x-4">
                 <img 
                   src="/yulia/foto2.jpg"
@@ -208,7 +186,6 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             </div>
           </div>
 
-          {/* Sidebar - Purchase Card (Sticky) */}
           <div className="lg:col-span-1">
             <div className="sticky top-24">
               <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-gray-100">
@@ -220,7 +197,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                 </div>
 
                 <button 
-                  onClick={() => onNavigate('checkout', { courseId: course.id })}
+                  onClick={() => onNavigate('checkout', { courseId: String(course.id) })}
                   className="w-full py-4 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-4 text-lg"
                 >
                   Comprar Ahora
@@ -260,7 +237,6 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                 </div>
               </div>
 
-              {/* Share */}
               <div className="mt-6 text-center">
                 <p className="text-sm text-gray-600 mb-3">Comparte este curso:</p>
                 <div className="flex justify-center space-x-3">

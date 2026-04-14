@@ -50,7 +50,7 @@ export const courses: Course[] = [
     rating: 4.9,
     reviewsCount: 47,
     thumbnail: '/yulia/brownies-saludables.jpg',
-    trailerUrl: 'PENDIENTE_TRAILER',
+    trailerUrl: 'https://www.youtube.com/embed/KFW34CW3f5k',
     featured: true,
     whatYouLearn: [
       'Sustitutos saludables para azúcar refinada (stevia, eritritol, dátiles)',
@@ -61,7 +61,7 @@ export const courses: Course[] = [
       'Conservación y almacenamiento adecuado'
     ],
     includes: [
-      '39 videos con contenido exclusivo',
+      '41 videos con contenido exclusivo',
       'Recetario descargable con recetas exclusivas',
       'Guía de sustituciones imprimible',
       'Plantillas de costeo para vender tus postres',
@@ -72,59 +72,67 @@ export const courses: Course[] = [
     modules: [
       {
         id: 'm1',
-        title: 'Módulo 1: Introducción e Ingredientes',
+        title: 'Módulo 1: Ingredientes y Endulzantes',
         lessons: [
-          { id: 'l1', title: 'Video 1 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_1' },
-          { id: 'l2', title: 'Video 2 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_2' },
-          { id: 'l3', title: 'Video 3 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_3' },
-          { id: 'l4', title: 'Video 4 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_4' },
-          { id: 'l5', title: 'Video 5 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_5' },
-          { id: 'l6', title: 'Video 6 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_6' },
-          { id: 'l7', title: 'Video 7 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_7' },
-          { id: 'l8', title: 'Video 8 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_8' },
-          { id: 'l9', title: 'Video 9 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_9' },
-          { id: 'l10', title: 'Video 10 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_10' },
-          { id: 'l11', title: 'Video 11 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_11' },
-          { id: 'l12', title: 'Video 12 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_12' },
-          { id: 'l13', title: 'Video 13 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_13' }
+          { id: 'l1', title: 'Bienvenida al curso de pastelería saludable', duration: '0:37', videoUrl: 'https://www.youtube.com/embed/KFW34CW3f5k' },
+          { id: 'l2', title: 'Conoce a tu profesora', duration: '0:45', videoUrl: 'https://www.youtube.com/embed/n-0eAyLd7X8' },
+          { id: 'l3', title: 'Introducción y descripción de ingredientes', duration: '8:26', videoUrl: 'https://www.youtube.com/embed/2odwG_7YuyY' },
+          { id: 'l4', title: 'Tipos de endulzantes. Endulzantes naturales calóricos', duration: '1:39', videoUrl: 'https://www.youtube.com/embed/vog5YhuaKKg' },
+          { id: 'l5', title: 'Tipos de endulzantes. Los polialcoholes', duration: '1:57', videoUrl: 'https://www.youtube.com/embed/v8l82BY4tnE' },
+          { id: 'l6', title: 'Tipos de endulzantes. Azúcares raros', duration: '1:26', videoUrl: 'https://www.youtube.com/embed/Jy7gOyhixVA' },
+          { id: 'l7', title: 'Tipos de endulzantes. Edulcorantes artificiales', duration: '1:09', videoUrl: 'https://www.youtube.com/embed/KALVp5KDxEY' },
+          { id: 'l8', title: 'Tipos de endulzantes. Endulzantes naturales NO calóricos', duration: '4:00', videoUrl: 'https://www.youtube.com/embed/-zza8-EE9M8' },
+          { id: 'l9', title: 'El gluten y la contaminación cruzada', duration: '3:09', videoUrl: 'https://www.youtube.com/embed/XSdQpc3VH1Q' }
         ]
       },
       {
         id: 'm2',
-        title: 'Módulo 2: Técnicas y Masas',
+        title: 'Módulo 2: Harinas Funcionales y Ghee',
         lessons: [
-          { id: 'l14', title: 'Video 14 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_14' },
-          { id: 'l15', title: 'Video 15 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_15' },
-          { id: 'l16', title: 'Video 16 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_16' },
-          { id: 'l17', title: 'Video 17 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_17' },
-          { id: 'l18', title: 'Video 18 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_18' },
-          { id: 'l19', title: 'Video 19 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_19' },
-          { id: 'l20', title: 'Video 20 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_20' },
-          { id: 'l21', title: 'Video 21 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_21' },
-          { id: 'l22', title: 'Video 22 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_22' },
-          { id: 'l23', title: 'Video 23 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_23' },
-          { id: 'l24', title: 'Video 24 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_24' },
-          { id: 'l25', title: 'Video 25 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_25' },
-          { id: 'l26', title: 'Video 26 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_26' }
+          { id: 'l10', title: 'Harinas funcionales. Formulación harina todo uso sin gluten', duration: '5:27', videoUrl: 'https://www.youtube.com/embed/Meo3gVWI3vM' },
+          { id: 'l11', title: 'Harinas funcionales. Realización del harina todo uso sin gluten', duration: '1:34', videoUrl: 'https://www.youtube.com/embed/wnA58I-BZHk' },
+          { id: 'l12', title: 'Harinas funcionales. Modo de preparación del harina de almendras', duration: '3:26', videoUrl: 'https://www.youtube.com/embed/iN5K24akmkQ' },
+          { id: 'l13', title: 'Harinas funcionales. Modo de conservación del harina de almendras', duration: '0:51', videoUrl: 'https://www.youtube.com/embed/TE5qlfr29vM' },
+          { id: 'l14', title: 'El ghee y sus beneficios para la salud', duration: '1:32', videoUrl: 'https://www.youtube.com/embed/nomMq-H0-nA' },
+          { id: 'l15', title: 'Cálculo de la merma del ghee', duration: '1:30', videoUrl: 'https://www.youtube.com/embed/FNZ10HS7ZRE' },
+          { id: 'l16', title: 'Modo de preparación del ghee', duration: '5:05', videoUrl: 'https://www.youtube.com/embed/_H7M0sfjW-0' },
+          { id: 'l17', title: 'Modo de conservación del ghee', duration: '0:40', videoUrl: 'https://www.youtube.com/embed/6mhRUQcBGEY' },
+          { id: 'l18', title: 'Cálculo de la merma del ghee', duration: '1:30', videoUrl: 'https://www.youtube.com/embed/jtVBvopDGKQ' }
         ]
       },
       {
         id: 'm3',
-        title: 'Módulo 3: Recetas Finales y Decoración',
+        title: 'Módulo 3: Recetas (Panqué, Coffee Cake y Torta)',
         lessons: [
-          { id: 'l27', title: 'Video 27 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_27' },
-          { id: 'l28', title: 'Video 28 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_28' },
-          { id: 'l29', title: 'Video 29 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_29' },
-          { id: 'l30', title: 'Video 30 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_30' },
-          { id: 'l31', title: 'Video 31 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_31' },
-          { id: 'l32', title: 'Video 32 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_32' },
-          { id: 'l33', title: 'Video 33 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_33' },
-          { id: 'l34', title: 'Video 34 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_34' },
-          { id: 'l35', title: 'Video 35 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_35' },
-          { id: 'l36', title: 'Video 36 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_36' },
-          { id: 'l37', title: 'Video 37 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_37' },
-          { id: 'l38', title: 'Video 38 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_38' },
-          { id: 'l39', title: 'Video 39 - Nombre pendiente', duration: '0:00', videoUrl: 'PENDIENTE_VIDEO_39' }
+          { id: 'l19', title: 'Masas batidas y horneados. Consejos de horneado', duration: '3:17', videoUrl: 'https://www.youtube.com/embed/KgaTHBt-guc' },
+          { id: 'l20', title: 'Panqué de vainilla y chocolate. Ingredientes a utilizar', duration: '0:29', videoUrl: 'https://www.youtube.com/embed/NRozl2SVr8Y' },
+          { id: 'l21', title: 'Panqué de vainilla y chocolate. Modo de preparación del panqué', duration: '5:15', videoUrl: 'https://www.youtube.com/embed/WwZ5RmDal2Q' },
+          { id: 'l22', title: 'Preparación del ganache de chocolate', duration: '2:42', videoUrl: 'https://www.youtube.com/embed/BbsBX5nDoyc' },
+          { id: 'l23', title: 'Panqué de vainilla y chocolate. Presentación final', duration: '0:40', videoUrl: 'https://www.youtube.com/embed/F3XpO4cfdRo' },
+          { id: 'l24', title: 'Coffee Cake de arándanos y almendras', duration: '0:21', videoUrl: 'https://www.youtube.com/embed/LSg8bq4gbFI' },
+          { id: 'l25', title: 'Coffee Cake. Modo de preparación de la torta', duration: '6:24', videoUrl: 'https://www.youtube.com/embed/t66GGURjsPs' },
+          { id: 'l26', title: 'Coffee Cake. Modo de preparación del topping', duration: '2:36', videoUrl: 'https://www.youtube.com/embed/g2Ph3BDaRvU' },
+          { id: 'l27', title: 'Coffee Cake de arándanos y almendras. Presentación final', duration: '1:14', videoUrl: 'https://www.youtube.com/embed/3oKWYRHTWwI' },
+          { id: 'l28', title: 'Torta de zanahoria glaseada. Ingredientes a utilizar para la torta', duration: '0:34', videoUrl: 'https://www.youtube.com/embed/_RWirVBStUM' },
+          { id: 'l29', title: 'Modo de preparación de la torta de zanahoria', duration: '6:15', videoUrl: 'https://www.youtube.com/embed/6fMBLomyhmY' },
+          { id: 'l30', title: 'Ingredientes a utilizar para el glaseado de la torta de zanahoria', duration: '0:55', videoUrl: 'https://www.youtube.com/embed/bE4rhcZQHqM' },
+          { id: 'l31', title: 'Torta de zanahoria. Ingredientes a utilizar para el glaseado', duration: '0:55', videoUrl: 'https://www.youtube.com/embed/7QzCiH8sbD0' },
+          { id: 'l32', title: 'Torta de zanahoria. Modo de preparación del glaseado', duration: '4:41', videoUrl: 'https://www.youtube.com/embed/S4p5SAddzv8' },
+          { id: 'l33', title: 'Torta de zanahoria. Presentación final', duration: '3:01', videoUrl: 'https://www.youtube.com/embed/1Axjg2m7Q5k' }
+        ]
+      },
+      {
+        id: 'm4',
+        title: 'Módulo 4: Cookies y Brownies',
+        lessons: [
+          { id: 'l34', title: 'Cookies chips de chocolate. Ingredientes a utilizar', duration: '1:06', videoUrl: 'https://www.youtube.com/embed/9LpngzBDDDY' },
+          { id: 'l35', title: 'Modo de preparación de las galletas', duration: '6:33', videoUrl: 'https://www.youtube.com/embed/6IUQJcws9yc' },
+          { id: 'l36', title: 'Cookies chips de chocolate. Armado, reposo y horneado', duration: '4:41', videoUrl: 'https://www.youtube.com/embed/4akdx60GmgY' },
+          { id: 'l37', title: 'Cookies chips de chocolate. Presentación final', duration: '0:49', videoUrl: 'https://www.youtube.com/embed/eamj03vVwXM' },
+          { id: 'l38', title: 'Brownies. Ingredientes a utilizar', duration: '0:41', videoUrl: 'https://www.youtube.com/embed/M1c-tJlMiZg' },
+          { id: 'l39', title: 'Brownies. Modo de preparación y horneado', duration: '7:39', videoUrl: 'https://www.youtube.com/embed/aAnC9yt15IQ' },
+          { id: 'l40', title: 'Brownies. Presentación final', duration: '1:23', videoUrl: 'https://www.youtube.com/embed/uGEF_bGvILw' },
+          { id: 'l41', title: 'Agradecimientos y despedida', duration: '1:04', videoUrl: 'https://www.youtube.com/embed/Jp6BgmJDfkg' }
         ]
       }
     ]
