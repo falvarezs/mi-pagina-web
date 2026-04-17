@@ -17,41 +17,61 @@ interface CheckoutPageProps {
 
 const EXCHANGE_RATE = 378.46;
 
+type PageState = 'form' | 'loading' | 'success' | 'error' | 'already-purchased';
+
 export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
   const course = courses.find(c => c.id === Number(courseId));
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod | null>(null);
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [file, setFile] = useState<File | null>(null);
-  const [submitted, setSubmitted] = useState(false);
+  const [pageState, setPageState] = useState<PageState>('loading');
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [alreadyPurchased, setAlreadyPurchased] = useState(false);
-  const [checkingPurchase, setCheckingPurchase] = useState(true);
 
   useEffect(() => {
     const loadSession = async () => {
-      const { data } = await supabase.auth.getSession();
-      if (data.session?.user?.email) {
-        setEmail(data.session.user.email);
-        setIsLoggedIn(true);
+      try {
+        const { data } = await supabase.auth.getSession();
+        if (data.session?.user?.email) {
+          setEmail(data.session.user.email);
+          setIsLoggedIn(true);
 
-        const userId = data.session.user.id;
-        const { data: existingPurchase } = await supabase
-          .from('purchases')
-          .select('id, status')
-          .eq('user_id', userId)
-          .eq('course_id', Number(courseId))
-          .maybeSingle();
+          const userId = data.session.user.id;
 
-        if (existingPurchase) {
-          setAlreadyPurchased(true);
+          // Verificar si ya tiene compra
+          const { data: existingPurchase } = await supabase
+            .from('purchases')
+            .select('id, status')
+            .eq('user_id', userId)
+            .eq('course_id', Number(courseId))
+            .maybeSingle();
+
+          if (existingPurchase) {
+            // Aprobado o pendiente → no puede comprar
+            if (
+              existingPurchase.status === 'approved' ||
+              existingPurchase.status === 'pending'
+            ) {
+              setPageState('already-purchased');
+              return;
+            }
+            // Rechazado → borrar compra vieja y dejar comprar de nuevo
+            if (existingPurchase.status === 'rejected') {
+              await supabase
+                .from('purchases')
+                .delete()
+                .eq('id', existingPurchase.id);
+            }
+          }
+        } else {
+          setIsLoggedIn(false);
         }
-      } else {
-        setIsLoggedIn(false);
+        setPageState('form');
+      } catch {
+        setPageState('form');
       }
-      setCheckingPurchase(false);
     };
 
     loadSession();
@@ -64,7 +84,7 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Curso no encontrado</h2>
           <button
             onClick={() => onNavigate('courses')}
-            className="text-[#FF6B6B] hover:underline font-semibold"
+            className="cursor-pointer text-[#FF6B6B] hover:underline font-semibold"
           >
             Ver todos los cursos
           </button>
@@ -75,7 +95,6 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
 
   const uploadProof = async (selectedFile: File, userId: string) => {
     const filePath = `${course.id}_${Date.now()}_${userId}.pdf`;
-
     const { error: uploadError } = await supabase.storage
       .from('comprobantes')
       .upload(filePath, selectedFile, {
@@ -83,9 +102,7 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
         upsert: true,
         contentType: 'application/pdf'
       });
-
     if (uploadError) throw uploadError;
-
     const { data } = supabase.storage.from('comprobantes').getPublicUrl(filePath);
     return data.publicUrl;
   };
@@ -95,33 +112,50 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
     if (!selectedMethod || !file) return;
 
     setSubmitting(true);
-    setError('');
+    setErrorMessage('');
 
     try {
       const { data: sessionData } = await supabase.auth.getSession();
       const userId = sessionData.session?.user?.id ?? null;
 
       if (!userId) {
-        setError('Debes iniciar sesión para completar la compra.');
+        setErrorMessage('Debes iniciar sesión para completar la compra.');
+        setPageState('error');
         setSubmitting(false);
         return;
       }
 
+      // Verificar compra duplicada
       const { data: existingPurchase } = await supabase
         .from('purchases')
-        .select('id')
+        .select('id, status')
         .eq('user_id', userId)
         .eq('course_id', course.id)
         .maybeSingle();
 
       if (existingPurchase) {
-        setAlreadyPurchased(true);
-        setSubmitting(false);
-        return;
+        // Aprobado o pendiente → no puede comprar
+        if (
+          existingPurchase.status === 'approved' ||
+          existingPurchase.status === 'pending'
+        ) {
+          setPageState('already-purchased');
+          setSubmitting(false);
+          return;
+        }
+        // Rechazado → borrar compra vieja
+        if (existingPurchase.status === 'rejected') {
+          await supabase
+            .from('purchases')
+            .delete()
+            .eq('id', existingPurchase.id);
+        }
       }
 
+      // Subir PDF
       const proofUrl = await uploadProof(file, userId);
 
+      // Guardar compra
       const { error: insertError } = await supabase
         .from('purchases')
         .insert({
@@ -139,12 +173,27 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
 
       if (insertError) throw insertError;
 
-      setSubmitted(true);
+      setPageState('success');
 
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'No pudimos enviar tu comprobante. Intenta de nuevo.';
       console.error('Error en checkout:', err);
-      setError(message);
+      let mensaje = 'Ocurrió un error inesperado. Por favor intenta de nuevo.';
+      if (err instanceof Error) {
+        const msg = err.message.toLowerCase();
+        if (msg.includes('storage') || msg.includes('upload')) {
+          mensaje = 'No pudimos subir tu comprobante PDF. Verifica que el archivo no esté dañado e intenta de nuevo.';
+        } else if (msg.includes('network') || msg.includes('fetch')) {
+          mensaje = 'Error de conexión a internet. Verifica tu conexión e intenta de nuevo.';
+        } else if (msg.includes('jwt') || msg.includes('auth')) {
+          mensaje = 'Tu sesión expiró. Por favor inicia sesión de nuevo.';
+        } else if (msg.includes('duplicate') || msg.includes('unique')) {
+          mensaje = 'Ya existe una solicitud para este curso.';
+        } else {
+          mensaje = err.message;
+        }
+      }
+      setErrorMessage(mensaje);
+      setPageState('error');
     } finally {
       setSubmitting(false);
     }
@@ -152,20 +201,20 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
 
   const amountVES = course.price * EXCHANGE_RATE;
 
-  // ── Pantalla: Verificando cuenta ──
-  if (checkingPurchase) {
+  // ── Cargando ──
+  if (pageState === 'loading') {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#FF6B6B] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Verificando tu cuenta...</p>
+          <div className="w-14 h-14 border-4 border-[#FF6B6B] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Verificando tu cuenta...</p>
         </div>
       </div>
     );
   }
 
-  // ── Pantalla: Ya tiene el curso ──
-  if (alreadyPurchased) {
+  // ── Ya tiene el curso (aprobado o pendiente) ──
+  if (pageState === 'already-purchased') {
     return (
       <div className="min-h-screen bg-gray-50 py-12 px-4">
         <div className="max-w-2xl mx-auto">
@@ -175,52 +224,39 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h2
-              className="text-3xl font-bold text-gray-900 mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
+            <h2 className="text-3xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
               ¡Ya tienes este curso!
             </h2>
             <p className="text-lg text-gray-700 mb-6">
-              Ya enviaste un comprobante de pago para{' '}
-              <strong>{course.title}</strong>.{' '}
-              No es necesario pagar dos veces.
+              Ya enviaste un comprobante de pago para <strong>{course.title}</strong>. No es necesario pagar dos veces.
             </p>
             <div className="bg-blue-50 border border-blue-200 rounded-xl p-5 mb-8 text-left">
               <h3 className="font-semibold text-gray-900 mb-3">¿Qué puedes hacer?</h3>
               <ul className="space-y-3 text-sm text-gray-700">
                 <li className="flex items-start space-x-2">
                   <span className="text-blue-500 font-bold mt-0.5">→</span>
-                  <span>
-                    Si tu pago ya fue <strong>aprobado</strong>, puedes acceder
-                    al curso desde tu panel.
-                  </span>
+                  <span>Si tu pago ya fue <strong>aprobado</strong>, puedes acceder al curso desde tu panel.</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <span className="text-blue-500 font-bold mt-0.5">→</span>
-                  <span>
-                    Si tu pago está <strong>pendiente</strong>, espera entre
-                    24-48 horas hábiles para la confirmación.
-                  </span>
+                  <span>Si tu pago está <strong>pendiente</strong>, espera entre 24-48 horas hábiles.</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <span className="text-blue-500 font-bold mt-0.5">→</span>
-                  <span>
-                    Si tienes algún problema contáctanos por WhatsApp o email.
-                  </span>
+                  <span>Si tienes algún problema contáctanos por WhatsApp o email.</span>
                 </li>
               </ul>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => onNavigate('dashboard')}
-                className="px-6 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-semibold rounded-full hover:shadow-lg transition-all"
+                className="cursor-pointer px-6 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-semibold rounded-full hover:shadow-lg transition-all"
               >
                 Ir a Mi Panel
               </button>
               <button
                 onClick={() => onNavigate('home')}
-                className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-gray-200 transition-colors"
+                className="cursor-pointer px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-gray-200 transition-colors"
               >
                 Volver al Inicio
               </button>
@@ -231,8 +267,8 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
     );
   }
 
-  // ── Pantalla: Enviado con éxito ──
-  if (submitted) {
+  // ── Éxito ──
+  if (pageState === 'success') {
     return (
       <div className="min-h-screen bg-gray-50 py-12 px-4">
         <div className="max-w-2xl mx-auto">
@@ -242,67 +278,47 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h2
-              className="text-3xl font-bold text-gray-900 mb-4"
-              style={{ fontFamily: "'Playfair Display', serif" }}
-            >
+            <h2 className="text-3xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
               ¡Comprobante Enviado con Éxito!
             </h2>
             <p className="text-lg text-gray-700 mb-2">
               Hola <strong>{name}</strong>, hemos recibido tu comprobante de pago.
             </p>
             <p className="text-gray-600 mb-6">
-              Verificaremos tu pago en las próximas{' '}
-              <strong>24-48 horas hábiles</strong> y te notificaremos a{' '}
-              <strong>{email}</strong>.
+              Verificaremos tu pago en las próximas <strong>24-48 horas hábiles</strong> y te notificaremos a <strong>{email}</strong>.
             </p>
-
             <div className="bg-green-50 border border-green-200 rounded-xl p-6 mb-6 text-left">
               <h3 className="font-semibold text-gray-900 mb-3">¿Qué sigue?</h3>
               <ol className="space-y-3 text-sm text-gray-700">
                 <li className="flex items-start space-x-3">
-                  <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                    1
-                  </span>
+                  <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold">1</span>
                   <span>Revisaremos tu comprobante PDF</span>
                 </li>
                 <li className="flex items-start space-x-3">
-                  <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                    2
-                  </span>
-                  <span>
-                    Te enviaremos una confirmación a <strong>{email}</strong>
-                  </span>
+                  <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold">2</span>
+                  <span>Te enviaremos una confirmación a <strong>{email}</strong></span>
                 </li>
                 <li className="flex items-start space-x-3">
-                  <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold">
-                    3
-                  </span>
-                  <span>
-                    Podrás acceder al curso desde <strong>"Mi Panel"</strong>{' '}
-                    inmediatamente después de la aprobación
-                  </span>
+                  <span className="flex-shrink-0 w-6 h-6 bg-green-600 text-white rounded-full flex items-center justify-center text-xs font-bold">3</span>
+                  <span>Podrás acceder al curso desde <strong>"Mi Panel"</strong> inmediatamente después de la aprobación</span>
                 </li>
               </ol>
             </div>
-
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-8">
               <p className="text-sm text-amber-800">
-                📧 Revisa también tu carpeta de <strong>spam</strong> por si
-                el email de confirmación llega ahí.
+                📧 Revisa también tu carpeta de <strong>spam</strong> por si el email de confirmación llega ahí.
               </p>
             </div>
-
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button
                 onClick={() => onNavigate('dashboard')}
-                className="px-6 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-semibold rounded-full hover:shadow-lg transition-all"
+                className="cursor-pointer px-6 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-semibold rounded-full hover:shadow-lg transition-all"
               >
                 Ir a Mi Panel
               </button>
               <button
                 onClick={() => onNavigate('home')}
-                className="px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-gray-200 transition-colors"
+                className="cursor-pointer px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-gray-200 transition-colors"
               >
                 Volver al Inicio
               </button>
@@ -313,7 +329,76 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
     );
   }
 
-  // ── Pantalla: Formulario de pago ──
+  // ── Error ──
+  if (pageState === 'error') {
+    return (
+      <div className="min-h-screen bg-gray-50 py-12 px-4">
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-lg p-8 text-center">
+            <div className="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <svg className="w-10 h-10 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+              No pudimos enviar tu comprobante
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Ocurrió un problema al procesar tu solicitud.
+            </p>
+            <div className="bg-red-50 border border-red-200 rounded-xl p-5 mb-6 text-left">
+              <div className="flex items-start space-x-3">
+                <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+                <div>
+                  <p className="text-sm font-bold text-red-700 mb-1">Detalle del error:</p>
+                  <p className="text-sm text-red-600">{errorMessage}</p>
+                </div>
+              </div>
+            </div>
+            <div className="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-8 text-left">
+              <h3 className="font-semibold text-gray-900 mb-3">¿Qué puedes hacer?</h3>
+              <ul className="space-y-2 text-sm text-gray-700">
+                <li className="flex items-start space-x-2">
+                  <span className="text-gray-400 font-bold mt-0.5">→</span>
+                  <span>Verifica que tu archivo sea un <strong>PDF válido</strong> y no esté dañado.</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="text-gray-400 font-bold mt-0.5">→</span>
+                  <span>Asegúrate de tener <strong>buena conexión a internet</strong>.</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="text-gray-400 font-bold mt-0.5">→</span>
+                  <span>Si el error persiste, contáctanos directamente por <strong>WhatsApp</strong>.</span>
+                </li>
+              </ul>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button
+                onClick={() => {
+                  setPageState('form');
+                  setErrorMessage('');
+                  setFile(null);
+                }}
+                className="cursor-pointer px-6 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-semibold rounded-full hover:shadow-lg transition-all"
+              >
+                🔄 Volver a Intentar
+              </button>
+              <button
+                onClick={() => onNavigate('home')}
+                className="cursor-pointer px-6 py-3 bg-gray-100 text-gray-700 font-semibold rounded-full hover:bg-gray-200 transition-colors"
+              >
+                Volver al Inicio
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── Formulario ──
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
       <div className="max-w-7xl mx-auto">
@@ -322,7 +407,7 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
         <div className="mb-8">
           <button
             onClick={() => onNavigate('course', { slug: course.slug })}
-            className="flex items-center text-gray-600 hover:text-[#FF6B6B] transition-colors"
+            className="cursor-pointer flex items-center text-gray-600 hover:text-[#FF6B6B] transition-colors"
           >
             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -336,10 +421,7 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
           {/* Formulario principal */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-2xl shadow-lg p-8">
-              <h1
-                className="text-3xl font-bold text-gray-900 mb-2"
-                style={{ fontFamily: "'Playfair Display', serif" }}
-              >
+              <h1 className="text-3xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
                 Finalizar Compra
               </h1>
               <p className="text-gray-600 mb-8">
@@ -349,16 +431,12 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
               {/* Aviso no logueado */}
               {!isLoggedIn && (
                 <div className="bg-amber-50 border border-amber-200 text-amber-800 px-4 py-4 rounded-lg text-sm mb-6">
-                  <p className="font-semibold mb-1">
-                    ⚠️ Debes iniciar sesión para continuar
-                  </p>
-                  <p className="mb-2">
-                    Para completar la compra necesitas una cuenta registrada.
-                  </p>
+                  <p className="font-semibold mb-1">⚠️ Debes iniciar sesión para continuar</p>
+                  <p className="mb-2">Para completar la compra necesitas una cuenta registrada.</p>
                   <button
                     type="button"
                     onClick={() => onNavigate('login')}
-                    className="font-bold text-amber-900 underline"
+                    className="cursor-pointer font-bold text-amber-900 underline"
                   >
                     Iniciar sesión →
                   </button>
@@ -366,19 +444,6 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
               )}
 
               <form onSubmit={handleSubmit} className="space-y-8">
-
-                {/* Error general */}
-                {error && (
-                  <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-start space-x-3">
-                    <svg className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                    </svg>
-                    <div>
-                      <p className="text-sm font-semibold text-red-700">Ocurrió un error:</p>
-                      <p className="text-sm text-red-600 mt-1">{error}</p>
-                    </div>
-                  </div>
-                )}
 
                 {/* Datos personales */}
                 <div className="space-y-4">
@@ -422,17 +487,11 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                 />
 
                 {/* Instrucciones del método */}
-                {selectedMethod === 'pagomovil' && (
-                  <PagoMovilPayment amount={course.price} />
-                )}
-                {selectedMethod === 'usdt' && (
-                  <USDTPayment amount={course.price} />
-                )}
-                {selectedMethod === 'zelle' && (
-                  <ZellePayment amount={course.price} />
-                )}
+                {selectedMethod === 'pagomovil' && <PagoMovilPayment amount={course.price} />}
+                {selectedMethod === 'usdt' && <USDTPayment amount={course.price} />}
+                {selectedMethod === 'zelle' && <ZellePayment amount={course.price} />}
 
-                {/* Subir comprobante PDF */}
+                {/* Subir PDF */}
                 {selectedMethod && (
                   <FileUpload onFileSelect={setFile} />
                 )}
@@ -440,15 +499,8 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                 {/* Botón enviar */}
                 <button
                   type="submit"
-                  disabled={
-                    !selectedMethod ||
-                    !file ||
-                    !email ||
-                    !name ||
-                    submitting ||
-                    !isLoggedIn
-                  }
-                  className="w-full py-4 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-bold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-lg"
+                  disabled={!selectedMethod || !file || !email || !name || submitting || !isLoggedIn}
+                  className="cursor-pointer w-full py-4 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-bold rounded-full hover:shadow-xl hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 text-lg"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   {submitting
@@ -467,7 +519,7 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                   <button
                     type="button"
                     onClick={() => onNavigate('terms')}
-                    className="text-[#FF6B6B] hover:underline"
+                    className="cursor-pointer text-[#FF6B6B] hover:underline"
                   >
                     Términos y Condiciones
                   </button>
@@ -479,13 +531,9 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
           {/* Resumen de compra */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
-              <h3
-                className="font-bold text-lg mb-4"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
-              >
+              <h3 className="font-bold text-lg mb-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                 Resumen de Compra
               </h3>
-
               <div className="border-b pb-4 mb-4">
                 <img
                   src={course.thumbnail}
@@ -494,7 +542,6 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                 />
                 <h4 className="font-semibold text-gray-900">{course.title}</h4>
               </div>
-
               <div className="space-y-3 mb-4">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Precio del curso:</span>
@@ -511,15 +558,11 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                   <span className="font-semibold text-green-600">$0</span>
                 </div>
               </div>
-
               <div className="border-t pt-4 mb-6">
                 <div className="flex justify-between items-center">
                   <span className="font-bold text-lg">Total:</span>
                   <div className="text-right">
-                    <div
-                      className="font-bold text-2xl text-[#FF6B6B]"
-                      style={{ fontFamily: "'Playfair Display', serif" }}
-                    >
+                    <div className="font-bold text-2xl text-[#FF6B6B]" style={{ fontFamily: "'Playfair Display', serif" }}>
                       ${course.price} USD
                     </div>
                     {selectedMethod === 'pagomovil' && (
@@ -530,7 +573,6 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                   </div>
                 </div>
               </div>
-
               <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-4">
                 <p className="text-xs text-green-800 leading-relaxed">
                   ✔ Acceso de por vida<br />
@@ -540,7 +582,6 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                   ✔ Soporte via email
                 </p>
               </div>
-
               <p className="text-xs text-gray-500 text-center">
                 🔒 Pago seguro · Confirmación en 24-48h
               </p>
