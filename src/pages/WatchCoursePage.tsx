@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { courses } from '../data/courses';
+import { supabase } from '../lib/supabaseClient';
 
 interface WatchCoursePageProps {
   courseId: string;
@@ -7,10 +8,44 @@ interface WatchCoursePageProps {
 }
 
 export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) {
+  const [courseAllowed, setCourseAllowed] = useState(false);
+  const [checkingAccess, setCheckingAccess] = useState(true);
   const [activeLesson, setActiveLesson] = useState(0);
-
-  // ✅ FIX: Convertir courseId a número para comparar correctamente
   const course = courses.find(c => c.id === Number(courseId));
+
+  useEffect(() => {
+    const checkAccess = async () => {
+      try {
+        const { data: sessionData } = await supabase.auth.getSession();
+        const userId = sessionData.session?.user?.id;
+        if (!userId || !course) {
+          setCourseAllowed(false);
+          setCheckingAccess(false);
+          return;
+        }
+
+        const { data, error } = await supabase
+          .from('purchases')
+          .select('status')
+          .eq('user_id', userId)
+          .eq('course_id', Number(course.id))
+          .eq('status', 'approved')
+          .maybeSingle();
+
+        if (error || !data) {
+          setCourseAllowed(false);
+        } else {
+          setCourseAllowed(true);
+        }
+      } catch {
+        setCourseAllowed(false);
+      } finally {
+        setCheckingAccess(false);
+      }
+    };
+
+    checkAccess();
+  }, [course, courseId]);
 
   if (!course) {
     return (
@@ -28,12 +63,41 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
     );
   }
 
+  if (checkingAccess) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+        <div className="text-center text-gray-200">
+          <div className="w-10 h-10 border-4 border-[#FF6B6B] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          Verificando acceso al curso...
+        </div>
+      </div>
+    );
+  }
+
+  if (!courseAllowed) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+        <div className="bg-gray-800 rounded-2xl p-8 text-center max-w-lg">
+          <h2 className="text-2xl font-bold text-white mb-4">Acceso restringido</h2>
+          <p className="text-gray-300 mb-6">
+            Este curso todavía no está activo para tu cuenta. Si ya enviaste el comprobante, espera a que aprobemos tu pago.
+          </p>
+          <button
+            onClick={() => onNavigate('dashboard')}
+            className="bg-[#FF6B6B] text-white px-6 py-3 rounded-xl hover:bg-[#e55a5a] transition-all"
+          >
+            Volver a Mis Cursos
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const allLessons = course.modules.flatMap(m => m.lessons);
   const currentLesson = allLessons[activeLesson];
 
   return (
     <div className="min-h-screen bg-gray-900">
-      {/* Video Player */}
       <div className="w-full bg-black">
         <div className="max-w-5xl mx-auto">
           <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
@@ -48,11 +112,8 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
         </div>
       </div>
 
-      {/* Course Content */}
       <div className="max-w-5xl mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-          {/* Left: Lesson Info */}
           <div className="lg:col-span-2">
             <div className="bg-gray-800 rounded-2xl p-6 mb-6">
               <p className="text-[#FF6B6B] font-montserrat text-sm uppercase tracking-wider mb-2">
@@ -73,7 +134,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
               </div>
             </div>
 
-            {/* Navigation Buttons */}
             <div className="flex gap-4 mb-6">
               <button
                 onClick={() => setActiveLesson(prev => Math.max(0, prev - 1))}
@@ -99,7 +159,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
               </button>
             </div>
 
-            {/* Resources */}
             {currentLesson?.resources && currentLesson.resources.length > 0 && (
               <div className="bg-gray-800 rounded-2xl p-6 mb-6">
                 <h3 className="text-white font-playfair font-bold text-lg mb-4">Recursos descargables</h3>
@@ -126,7 +185,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
               </div>
             )}
 
-            {/* Course Description */}
             <div className="bg-gray-800 rounded-2xl p-6">
               <h3 className="text-white font-playfair font-bold text-lg mb-3">Sobre este curso</h3>
               <p className="text-gray-300 font-montserrat text-sm leading-relaxed">
@@ -135,13 +193,11 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
             </div>
           </div>
 
-          {/* Right: Lesson List */}
           <div className="lg:col-span-1">
             <div className="bg-gray-800 rounded-2xl p-4 sticky top-24">
               <h3 className="text-white font-playfair font-bold text-lg mb-4 px-2">
                 Contenido del Curso
               </h3>
-
               <div className="space-y-2 max-h-[60vh] overflow-y-auto">
                 {course.modules.map((module, moduleIndex) => (
                   <div key={module.id}>
@@ -153,11 +209,9 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                         {module.title}
                       </p>
                     </div>
-
                     {module.lessons.map((lesson) => {
                       const globalIndex = allLessons.findIndex(l => l.id === lesson.id);
                       const isActive = globalIndex === activeLesson;
-
                       return (
                         <button
                           key={lesson.id}
@@ -177,7 +231,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                               <path d="M8 5v14l11-7z"/>
                             </svg>
                           </div>
-
                           <div className="flex-1 min-w-0">
                             <p className={`text-sm font-montserrat truncate
                               ${isActive ? 'text-white font-semibold' : 'text-gray-300'}`}>
