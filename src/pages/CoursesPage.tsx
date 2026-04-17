@@ -29,12 +29,21 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
           setApprovedCourseIds(purchases.map(p => p.course_id));
         }
       } catch {
-        // Si no está logueado simplemente no muestra badges
+        // Si no está logueado no muestra badges
       }
     };
 
     checkPurchases();
   }, []);
+
+  const handleViewCourse = (slug: string, courseId: number) => {
+    // Si el curso está activado, ir directo a verlo
+    if (approvedCourseIds.includes(courseId)) {
+      onNavigate('watch-course', { courseId: String(courseId) });
+    } else {
+      onNavigate('course', { slug });
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -51,30 +60,20 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
         </div>
       </div>
 
-      {/* Courses Grid */}
+      {/* Grid de cursos */}
       <div className="max-w-7xl mx-auto px-4 py-12">
         <div className="text-sm text-gray-600 mb-6">
           {courses.length} {courses.length === 1 ? 'curso encontrado' : 'cursos encontrados'}
         </div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {courses.map(course => (
-            <div key={course.id} className="relative">
-
-              {/* Badge Aprobado */}
-              {approvedCourseIds.includes(course.id) && (
-                <div className="absolute top-4 left-4 z-10">
-                  <span className="flex items-center gap-1 px-3 py-1 bg-green-500 text-white text-xs font-bold rounded-full shadow-lg">
-                    ✅ Activado
-                  </span>
-                </div>
-              )}
-
-              <CourseCard
-                course={course}
-                onViewCourse={(slug) => onNavigate('course', { slug })}
-                comingSoon={!ACTIVE_COURSE_IDS.includes(course.id)}
-              />
-            </div>
+            <CourseCard
+              key={course.id}
+              course={course}
+              onViewCourse={(slug) => handleViewCourse(slug, course.id)}
+              comingSoon={!ACTIVE_COURSE_IDS.includes(course.id)}
+              isActivated={approvedCourseIds.includes(course.id)}
+            />
           ))}
         </div>
       </div>
