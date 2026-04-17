@@ -1,6 +1,5 @@
 import { UserIcon } from './Icons';
 
-// Iconos SVG para el navbar
 const HomeIcon = ({ className = "w-6 h-6" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -44,20 +43,17 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
-          {/* Logo Premium */}
-          <button 
+
+          {/* Logo */}
+          <button
             onClick={() => onNavigate('home')}
-            className="flex items-center space-x-3 group"
+            className="flex items-center space-x-3 group cursor-pointer"
           >
             <div className="w-12 h-12 rounded-full bg-white border border-[#F59E0B] flex items-center justify-center shadow-sm group-hover:shadow-lg transition-all transform group-hover:scale-105">
               <div className="flex items-center gap-1">
-                <span className="text-[#F59E0B] text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  K
-                </span>
+                <span className="text-[#F59E0B] text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif" }}>K</span>
                 <span className="w-[1px] h-5 bg-[#F59E0B]/70" />
-                <span className="text-[#F59E0B] text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif" }}>
-                  R
-                </span>
+                <span className="text-[#F59E0B] text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif" }}>R</span>
               </div>
             </div>
             <div className="hidden md:flex flex-col">
@@ -70,14 +66,14 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
             </div>
           </button>
 
-          {/* Navigation Icons - Siempre visible */}
+          {/* Navigation Icons */}
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {/* Home Icon */}
+
             <button
               onClick={() => onNavigate('home')}
-              className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
-                currentPage === 'home' 
-                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md' 
+              className={`cursor-pointer flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
+                currentPage === 'home'
+                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
               title="Inicio"
@@ -88,12 +84,11 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               </span>
             </button>
 
-            {/* Courses Icon */}
             <button
               onClick={() => onNavigate('courses')}
-              className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
-                currentPage === 'courses' 
-                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md' 
+              className={`cursor-pointer flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
+                currentPage === 'courses'
+                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
               title="Cursos"
@@ -104,12 +99,11 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               </span>
             </button>
 
-            {/* About Icon */}
             <button
               onClick={() => onNavigate('about')}
-              className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
-                currentPage === 'about' 
-                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md' 
+              className={`cursor-pointer flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
+                currentPage === 'about'
+                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
               title="Sobre Mí"
@@ -120,12 +114,11 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               </span>
             </button>
 
-            {/* FAQ Icon */}
             <button
               onClick={() => onNavigate('faq')}
-              className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
-                currentPage === 'faq' 
-                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md' 
+              className={`cursor-pointer flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
+                currentPage === 'faq'
+                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
               title="FAQ"
@@ -136,12 +129,11 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               </span>
             </button>
 
-            {/* Contact Icon */}
             <button
               onClick={() => onNavigate('contact')}
-              className={`flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
-                currentPage === 'contact' 
-                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md' 
+              className={`cursor-pointer flex flex-col items-center justify-center p-3 rounded-xl transition-all group ${
+                currentPage === 'contact'
+                  ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md'
                   : 'text-gray-600 hover:bg-gray-50'
               }`}
               title="Contacto"
@@ -152,13 +144,13 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               </span>
             </button>
 
-            {/* Login/Dashboard Button */}
+            {/* Login/Dashboard */}
             <div className="ml-2 sm:ml-4 pl-2 sm:pl-4 border-l border-gray-200 flex items-center gap-2">
               {isLoggedIn ? (
                 <>
                   <button
                     onClick={() => onNavigate('dashboard')}
-                    className="flex items-center space-x-2 bg-gradient-to-r from-[#14B8A6] to-[#0D9488] text-white px-4 sm:px-6 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm"
+                    className="cursor-pointer flex items-center space-x-2 bg-gradient-to-r from-[#14B8A6] to-[#0D9488] text-white px-4 sm:px-6 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
                     <UserIcon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -166,7 +158,7 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
                   </button>
                   <button
                     onClick={onLogout}
-                    className="inline-flex items-center px-4 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                    className="cursor-pointer inline-flex items-center px-4 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
                     Cerrar sesión
@@ -175,7 +167,7 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               ) : (
                 <button
                   onClick={() => onNavigate('login')}
-                  className="flex items-center space-x-2 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white px-4 sm:px-6 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm"
+                  className="cursor-pointer flex items-center space-x-2 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white px-4 sm:px-6 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   <UserIcon className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -184,14 +176,14 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               )}
             </div>
 
-            {/* Admin Button (solo visible para admin) */}
+            {/* Admin Button */}
             {isAdmin && (
               <button
                 onClick={() => onNavigate('admin')}
-                className="ml-2 hidden sm:flex items-center px-4 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50"
+                className="cursor-pointer ml-2 hidden sm:flex items-center px-4 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
                 style={{ fontFamily: "'Montserrat', sans-serif" }}
               >
-                Admin
+                🔐 Admin
               </button>
             )}
           </div>

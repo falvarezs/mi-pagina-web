@@ -92,7 +92,7 @@ export function AdminPage({ onNavigate }: AdminPageProps) {
 
     const { error: updateError } = await supabase
       .from('purchases')
-      .update({ status, updated_at: new Date().toISOString() })
+      .update({ status })
       .eq('id', purchaseId);
 
     if (updateError) {
