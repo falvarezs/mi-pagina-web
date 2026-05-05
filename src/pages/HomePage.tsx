@@ -21,7 +21,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </div>
               
               <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold text-gray-900 mb-6 leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Karolain Rondon
+                Karolain Rondón
               </h1>
               <p className="text-base sm:text-lg text-gray-500 uppercase tracking-[0.25em] mb-6" style={{ fontFamily: "'Montserrat', sans-serif" }}>
                 Chef Pastelera
@@ -68,7 +68,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <div className="flex flex-col sm:flex-row gap-4">
                 <button 
                   onClick={() => onNavigate('courses')}
-                  className="group px-8 py-4 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-bold rounded-full hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center space-x-2 transform hover:scale-105"
+                  className="group px-8 py-4 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-bold rounded-full hover:shadow-2xl transition-all duration-300 text-lg flex items-center justify-center space-x-2 transform hover:scale-105 cursor-pointer"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   <span>Ver Mis Cursos</span>
@@ -78,7 +78,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </button>
                 <button 
                   onClick={() => onNavigate('about')}
-                  className="px-8 py-4 bg-white text-gray-800 font-semibold rounded-full hover:shadow-lg transition-all duration-300 border-2 border-gray-200 hover:border-gray-300 text-lg"
+                  className="px-8 py-4 bg-white text-gray-800 font-semibold rounded-full hover:shadow-lg transition-all duration-300 border-2 border-gray-200 hover:border-gray-300 text-lg cursor-pointer"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   Conoce Mi Historia
@@ -95,7 +95,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <div className="w-full h-full rounded-full overflow-hidden shadow-2xl ring-8 ring-white/50 ring-offset-8 ring-offset-[#FEF3C7]/20">
                       <img 
                         src="/yulia/pagina-principal.jpg" 
-                        alt="Chef Karolain Rondon"
+                        alt="Chef Karolain Rondón"
                         className="w-full h-full object-cover"
                       />
                     </div>
@@ -107,7 +107,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 <div className="absolute -bottom-8 -left-8 w-72 h-72 bg-gradient-to-br from-[#14B8A6]/20 to-[#0D9488]/20 rounded-full blur-3xl -z-10"></div>
 
                 {/* Badge 1: Rating - Top Right */}
-                <div className="absolute top-8 right-8 bg-white rounded-2xl shadow-xl p-4 transform rotate-3 hover:rotate-0 transition-transform animate-float">
+                <div className="absolute top-8 right-8 bg-white rounded-2xl shadow-xl p-4 transform rotate-3 hover:rotate-0 transition-transform animate-float z-20">
                   <div className="flex items-center space-x-2">
                     <AwardIcon className="w-6 h-6 text-[#F59E0B]" />
                     <div>
@@ -118,7 +118,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </div>
 
                 {/* Badge 2: Estudiantes - Bottom Left */}
-                <div className="absolute bottom-8 left-8 bg-white rounded-2xl shadow-xl p-4 transform -rotate-3 hover:rotate-0 transition-transform animate-float-delayed">
+                <div className="absolute bottom-8 left-8 bg-white rounded-2xl shadow-xl p-4 transform -rotate-3 hover:rotate-0 transition-transform animate-float-delayed z-20">
                   <div className="flex items-center space-x-3">
                     <div className="w-12 h-12 bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] rounded-full flex items-center justify-center flex-shrink-0">
                       <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -133,7 +133,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </div>
 
                 {/* Badge 3: Experiencia - Top Left */}
-                <div className="absolute top-4 left-4 bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] rounded-2xl shadow-xl px-5 py-3 transform -rotate-6 hover:rotate-0 transition-transform animate-float-slow">
+                <div className="absolute top-4 left-4 bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] rounded-2xl shadow-xl px-5 py-3 transform -rotate-6 hover:rotate-0 transition-transform animate-float-slow z-20">
                   <div className="text-center text-white">
                     <p className="text-3xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>15</p>
                     <p className="text-xs uppercase tracking-wider" style={{ fontFamily: "'Montserrat', sans-serif" }}>Años</p>
@@ -141,27 +141,27 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </div>
 
                 {/* Badge 4: Certificación - Top Center */}
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-xl p-4 hover:scale-110 transition-transform animate-float">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-xl p-4 hover:scale-110 transition-transform animate-float z-20">
                   <AwardIcon className="w-8 h-8 text-[#F59E0B]" />
                 </div>
 
                 {/* Badge 5: 100% Online - Right Center */}
-                <div className="absolute right-0 top-1/2 translate-x-1/4 -translate-y-1/2 bg-gradient-to-br from-[#14B8A6] to-[#0D9488] rounded-xl shadow-xl px-4 py-3 transform rotate-90 hover:rotate-0 transition-transform animate-float-delayed">
+                <div className="absolute right-0 top-1/2 translate-x-1/4 -translate-y-1/2 bg-gradient-to-br from-[#14B8A6] to-[#0D9488] rounded-xl shadow-xl px-4 py-3 transform rotate-90 hover:rotate-0 transition-transform animate-float-delayed z-20">
                   <div className="text-white text-center">
                     <p className="text-xs font-bold uppercase tracking-wider whitespace-nowrap" style={{ fontFamily: "'Montserrat', sans-serif" }}>100% Online</p>
                   </div>
                 </div>
 
-                {/* Badge 6: Países - Left Center */}
-                <div className="absolute left-0 top-1/3 -translate-x-1/4 bg-white rounded-2xl shadow-xl px-4 py-3 transform -rotate-12 hover:rotate-0 transition-transform animate-float-slow">
+                {/* Badge 6: Años Profesional - Left Center */}
+                <div className="absolute left-0 top-1/3 -translate-x-1/4 bg-white rounded-2xl shadow-xl px-4 py-3 transform -rotate-12 hover:rotate-0 transition-transform animate-float-slow z-20">
                   <div className="text-center">
-                    <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>15</p>
-                    <p className="text-xs text-gray-600 uppercase" style={{ fontFamily: "'Montserrat', sans-serif" }}>Países</p>
+                    <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>8</p>
+                    <p className="text-xs text-gray-600 uppercase" style={{ fontFamily: "'Montserrat', sans-serif" }}>Años Pro</p>
                   </div>
                 </div>
 
                 {/* Badge 7: Cursos - Bottom Right */}
-                <div className="absolute bottom-4 right-4 bg-gradient-to-br from-[#14B8A6] to-[#0D9488] rounded-2xl shadow-xl px-5 py-3 transform rotate-6 hover:rotate-0 transition-transform animate-float-delayed-2">
+                <div className="absolute bottom-4 right-4 bg-gradient-to-br from-[#14B8A6] to-[#0D9488] rounded-2xl shadow-xl px-5 py-3 transform rotate-6 hover:rotate-0 transition-transform animate-float-delayed-2 z-20">
                   <div className="text-white text-center">
                     <p className="text-3xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>3</p>
                     <p className="text-xs uppercase tracking-wider" style={{ fontFamily: "'Montserrat', sans-serif" }}>Cursos</p>
@@ -169,7 +169,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </div>
 
                 {/* Badge 8: Satisfacción - Bottom Center */}
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-xl px-5 py-3 hover:scale-110 transition-transform animate-float-slow">
+                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-xl px-5 py-3 hover:scale-110 transition-transform animate-float-slow z-20">
                   <div className="text-center">
                     <p className="text-2xl font-bold bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] bg-clip-text text-transparent" style={{ fontFamily: "'Playfair Display', serif" }}>98%</p>
                     <p className="text-xs text-gray-600 uppercase" style={{ fontFamily: "'Montserrat', sans-serif" }}>Satisfacción</p>
@@ -285,7 +285,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               href="https://instagram.com/comeback.pasteleria"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-gray-100 cursor-pointer"
             >
               <div className="w-12 h-12 bg-pink-100 rounded-xl flex items-center justify-center mb-4">
                 <svg className="w-6 h-6 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
@@ -299,7 +299,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               href="https://facebook.com"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-gray-100 cursor-pointer"
             >
               <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
                 <svg className="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
@@ -313,7 +313,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               href="https://wa.me/584241055470"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-gray-100 cursor-pointer"
             >
               <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-4">
                 <svg className="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
@@ -325,7 +325,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </a>
             <a
               href="mailto:informacion.comeback@gmail.com"
-              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              className="bg-white rounded-2xl p-6 shadow-md hover:shadow-xl transition-all border border-gray-100 cursor-pointer"
             >
               <div className="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
                 <svg className="w-6 h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -353,7 +353,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
             <button
               onClick={() => onNavigate('courses')}
-              className="text-[#FF6B6B] font-semibold hover:underline"
+              className="text-[#FF6B6B] font-semibold hover:underline cursor-pointer"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               Ver cursos →
@@ -365,7 +365,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <div key={photo} className="group overflow-hidden rounded-2xl shadow-md bg-gray-50">
                 <img
                   src={`/yulia/${photo}`}
-                  alt="Taller de repostería con Karolain Rondon"
+                  alt="Taller de repostería con Karolain Rondón"
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
@@ -382,7 +382,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <div key={photo} className="group overflow-hidden rounded-2xl shadow-md bg-white">
                 <img
                   src={`/yulia/${photo}`}
-                  alt="Momentos reales de los cursos de Karolain Rondon"
+                  alt="Momentos reales de los cursos de Karolain Rondón"
                   className="w-full h-64 object-cover transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
@@ -412,7 +412,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </p>
           <button 
             onClick={() => onNavigate('courses')}
-            className="group px-10 py-5 bg-white text-[#FF6B6B] font-bold rounded-full hover:shadow-2xl transition-all duration-300 text-lg inline-flex items-center space-x-3 transform hover:scale-105"
+            className="group px-10 py-5 bg-white text-[#FF6B6B] font-bold rounded-full hover:shadow-2xl transition-all duration-300 text-lg inline-flex items-center space-x-3 transform hover:scale-105 cursor-pointer"
             style={{ fontFamily: "'Montserrat', sans-serif" }}
           >
             <span>Explorar Todos los Cursos</span>

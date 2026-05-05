@@ -53,18 +53,14 @@ export const courses: Course[] = [
     trailerUrl: 'https://www.youtube.com/embed/KFW34CW3f5k',
     featured: true,
     whatYouLearn: [
-      'Sustitutos saludables para azúcar refinada (stevia, eritritol, dátiles)',
-      'Técnicas de horneado para harinas alternativas (almendra, coco, avena)',
-      'Balance perfecto de humedad sin lácteos ni huevos',
-      'Decoración profesional con ingredientes naturales',
-      'Cálculo nutricional básico para tus creaciones',
-      'Conservación y almacenamiento adecuado'
+      'Tipos de endulzantes, usos y beneficios para la salud',
+      'Formulación para realizar harina todo uso sin gluten',
+      'Elaboración de harina de almendras artesanal',
+      '¿Qué es un ghee? beneficios y manera de realizarlo'
     ],
     includes: [
       '41 videos con contenido exclusivo',
       'Recetario descargable con recetas exclusivas',
-      'Guía de sustituciones imprimible',
-      'Plantillas de costeo para vender tus postres',
       'Acceso de por vida al contenido',
       'Actualizaciones gratuitas',
       'Certificado de finalización'
