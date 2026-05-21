@@ -51,12 +51,12 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
 
   if (!course) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex items-center justify-center px-4">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Curso no encontrado</h2>
           <button
             onClick={() => onNavigate('courses')}
-            className="text-[#FF6B6B] hover:underline"
+            className="cursor-pointer text-[#FF6B6B] hover:underline"
           >
             Ver todos los cursos
           </button>
@@ -112,7 +112,8 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
           </div>
           <button
             onClick={() => onNavigate('watch-course', { courseId: String(course.id) })}
-            className="cursor-pointer w-full py-4 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-4 text-lg"
+            className="cursor-pointer w-full py-4 bg-gradient-secondary text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-4 text-lg"
+            style={{ background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)' }}
           >
             ▶ Ver Curso Ahora
           </button>
@@ -196,7 +197,6 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             </p>
           </div>
 
-          {/* Razones comunes */}
           <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-5">
             <p className="text-xs font-bold text-red-800 mb-2">Razones comunes de rechazo:</p>
             <ul className="space-y-1 text-xs text-red-700">
@@ -219,7 +219,6 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             </ul>
           </div>
 
-          {/* Precio */}
           <div className="text-center mb-4">
             <p className="text-sm text-gray-500 mb-1">Precio del curso</p>
             <p className="text-3xl font-bold text-gray-900">
@@ -227,10 +226,9 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             </p>
           </div>
 
-          {/* Botón enviar nuevo comprobante */}
           <button
             onClick={() => onNavigate('checkout', { courseId: String(course.id) })}
-            className="cursor-pointer w-full py-4 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-3 text-lg"
+            className="cursor-pointer w-full py-4 bg-gradient-primary text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-3 text-lg"
           >
             🔄 Enviar Nuevo Comprobante
           </button>
@@ -242,81 +240,138 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
       );
     }
 
-    // ── Sin compra ──
+    // ══════════════════════════════════════════════════════
+    // ── Sin compra (NUEVO DISEÑO MEJORADO) ──────────────────
+    // ══════════════════════════════════════════════════════
     return (
-      <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-gray-100">
-        <div className="text-center mb-6">
-          <div className="text-4xl font-bold text-gray-900 mb-2">
-            ${course.price}{' '}
-            <span className="text-lg text-gray-500">{course.currency}</span>
-          </div>
-          <p className="text-sm text-gray-600">Pago único · Acceso de por vida</p>
-        </div>
-        <button
-          onClick={() => onNavigate('checkout', { courseId: String(course.id) })}
-          className="cursor-pointer w-full py-4 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-4 text-lg"
+      <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-gray-100">
+        
+        {/* Banner superior con precio destacado */}
+        <div 
+          className="px-6 py-6 text-center text-white relative overflow-hidden"
+          style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)' }}
         >
-          Comprar Ahora
-        </button>
-        <div className="space-y-3 text-sm text-gray-600 mb-6">
-          <div className="flex items-center">
-            <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            Acceso inmediato tras confirmación
-          </div>
-          <div className="flex items-center">
-            <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            Sin límite de tiempo
-          </div>
-          <div className="flex items-center">
-            <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            Certificado de finalización
-          </div>
-          <div className="flex items-center">
-            <svg className="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-            </svg>
-            Actualizaciones gratuitas
+          {/* Decoración de fondo */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16"></div>
+          <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full -ml-12 -mb-12"></div>
+          
+          <div className="relative z-10">
+            <p className="text-xs uppercase tracking-widest opacity-90 mb-2">
+              Inversión única
+            </p>
+            <div className="flex items-baseline justify-center gap-2 mb-2">
+              <span className="text-5xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>
+                ${course.price}
+              </span>
+              <span className="text-xl opacity-90">{course.currency}</span>
+            </div>
+            <p className="text-sm opacity-95">
+              Acceso de por vida
+            </p>
           </div>
         </div>
-        <div className="border-t pt-4">
-          <p className="text-xs text-gray-500 text-center">
-            Métodos de pago: Zelle · Pago Móvil · USDT
+
+        {/* Contenido principal */}
+        <div className="p-6">
+
+          {/* Botón COMPRAR principal - MUY VISIBLE */}
+          <button
+            onClick={() => onNavigate('checkout', { courseId: String(course.id) })}
+            className="cursor-pointer w-full py-4 text-white font-bold rounded-full hover:shadow-2xl hover:scale-105 transition-all duration-300 mb-3 text-lg shadow-lg"
+            style={{ 
+              background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
+              boxShadow: '0 10px 25px -5px rgba(255, 107, 107, 0.4)'
+            }}
+          >
+            🛒 Comprar Ahora
+          </button>
+
+          <p className="text-xs text-center text-gray-500 mb-6">
+            ✓ Pago 100% seguro · Garantía total
           </p>
+
+          {/* Beneficios incluidos */}
+          <div className="space-y-3 text-sm text-gray-700 mb-6">
+            <div className="flex items-center">
+              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <span className="font-medium">Acceso inmediato tras confirmación</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <span className="font-medium">Sin límite de tiempo</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <span className="font-medium">Certificado de finalización</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <span className="font-medium">Actualizaciones gratuitas</span>
+            </div>
+          </div>
+
+          {/* Métodos de pago */}
+          <div className="border-t border-gray-100 pt-4">
+            <p className="text-xs text-gray-500 text-center mb-2">
+              Métodos de pago aceptados
+            </p>
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+              <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold text-gray-700">
+                Zelle
+              </span>
+              <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold text-gray-700">
+                Pago Móvil
+              </span>
+              <span className="px-3 py-1 bg-gray-100 rounded-full text-xs font-semibold text-gray-700">
+                USDT
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
 
       {/* Breadcrumb */}
       <div className="bg-white border-b">
         <div className="max-w-7xl mx-auto px-4 py-4">
-          <div className="flex items-center text-sm text-gray-600">
-            <button onClick={() => onNavigate('home')} className="hover:text-[#FF6B6B] cursor-pointer">Inicio</button>
+          <div className="flex items-center text-sm text-gray-600 flex-wrap">
+            <button onClick={() => onNavigate('home')} className="cursor-pointer hover:text-[#FF6B6B]">Inicio</button>
             <span className="mx-2">/</span>
-            <button onClick={() => onNavigate('courses')} className="hover:text-[#FF6B6B] cursor-pointer">Cursos</button>
+            <button onClick={() => onNavigate('courses')} className="cursor-pointer hover:text-[#FF6B6B]">Cursos</button>
             <span className="mx-2">/</span>
-            <span className="text-gray-900">{course.title}</span>
+            <span className="text-gray-900 truncate">{course.title}</span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-3 gap-8">
+      <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
 
           {/* Contenido principal */}
           <div className="lg:col-span-2">
 
             {/* Trailer */}
-            <div className="bg-black rounded-2xl overflow-hidden shadow-xl mb-8 aspect-video">
+            <div className="bg-black rounded-2xl overflow-hidden shadow-xl mb-6 sm:mb-8 aspect-video">
               <iframe
                 src={course.trailerUrl}
                 className="w-full h-full"
@@ -326,11 +381,11 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             </div>
 
             {/* Info del curso */}
-            <div className="bg-white rounded-2xl shadow-md p-8 mb-8">
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
                 {course.title}
               </h1>
-              <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 mb-6">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-sm text-gray-600 mb-6">
                 <div className="flex items-center">
                   <svg className="w-5 h-5 text-yellow-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
@@ -357,54 +412,54 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                   <span>{totalLessons} lecciones</span>
                 </div>
               </div>
-              <p className="text-lg text-gray-700 leading-relaxed">{course.fullDescription}</p>
+              <p className="text-base sm:text-lg text-gray-700 leading-relaxed">{course.fullDescription}</p>
             </div>
 
             {/* Qué aprenderás */}
-            <div className="bg-white rounded-2xl shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">¿Qué aprenderás?</h2>
-              <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>¿Qué aprenderás?</h2>
+              <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                 {course.whatYouLearn.map((item, idx) => (
                   <div key={idx} className="flex items-start">
-                    <svg className="w-6 h-6 text-green-500 mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="text-gray-700">{item}</span>
+                    <span className="text-sm sm:text-base text-gray-700">{item}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Contenido del curso */}
-            <div className="bg-white rounded-2xl shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Contenido del Curso</h2>
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Contenido del Curso</h2>
               <div className="space-y-3">
                 {course.modules.map((module) => (
                   <div key={module.id} className="border border-gray-200 rounded-lg overflow-hidden">
                     <button
                       onClick={() => toggleModule(module.id)}
-                      className="cursor-pointer w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors"
+                      className="cursor-pointer w-full flex items-center justify-between p-3 sm:p-4 hover:bg-gray-50 transition-colors gap-2"
                     >
-                      <div className="flex items-center">
-                        <svg className={`w-5 h-5 mr-3 transition-transform ${openModules.includes(module.id) ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="flex items-center min-w-0 flex-1">
+                        <svg className={`w-5 h-5 mr-2 sm:mr-3 transition-transform flex-shrink-0 ${openModules.includes(module.id) ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                        <span className="font-semibold text-gray-900">{module.title}</span>
+                        <span className="font-semibold text-gray-900 text-sm sm:text-base text-left truncate">{module.title}</span>
                       </div>
-                      <span className="text-sm text-gray-500">{module.lessons.length} lecciones</span>
+                      <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap flex-shrink-0">{module.lessons.length} lecc.</span>
                     </button>
                     {openModules.includes(module.id) && (
                       <div className="bg-gray-50 border-t border-gray-200">
                         {module.lessons.map((lesson) => (
-                          <div key={lesson.id} className="flex items-center justify-between p-4 border-b border-gray-200 last:border-b-0">
-                            <div className="flex items-center">
-                              <svg className="w-5 h-5 text-gray-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <div key={lesson.id} className="flex items-center justify-between p-3 sm:p-4 border-b border-gray-200 last:border-b-0 gap-2">
+                            <div className="flex items-center min-w-0 flex-1">
+                              <svg className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 mr-2 sm:mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
-                              <span className="text-gray-700">{lesson.title}</span>
+                              <span className="text-sm sm:text-base text-gray-700 truncate">{lesson.title}</span>
                             </div>
-                            <span className="text-sm text-gray-500">{lesson.duration}</span>
+                            <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap flex-shrink-0">{lesson.duration}</span>
                           </div>
                         ))}
                       </div>
@@ -415,32 +470,32 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             </div>
 
             {/* Qué incluye */}
-            <div className="bg-white rounded-2xl shadow-md p-8 mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Qué incluye este curso</h2>
-              <div className="grid md:grid-cols-2 gap-4">
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Qué incluye este curso</h2>
+              <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                 {course.includes.map((item, idx) => (
                   <div key={idx} className="flex items-start">
-                    <svg className="w-6 h-6 text-[#FF6B6B] mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#FF6B6B] mr-2 sm:mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-gray-700">{item}</span>
+                    <span className="text-sm sm:text-base text-gray-700">{item}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Instructora */}
-            <div className="bg-white rounded-2xl shadow-md p-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Tu Instructora</h2>
-              <div className="flex items-start space-x-4">
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Tu Instructora</h2>
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:space-x-4">
                 <img
                   src="/yulia/foto2.jpg"
-                  alt="Chef Karolain Rondon"
-                  className="w-24 h-24 rounded-full object-cover"
+                  alt="Chef Karolain Rondón"
+                  className="w-24 h-24 sm:w-24 sm:h-24 rounded-full object-cover object-center flex-shrink-0"
                 />
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Chef Karolain Rondon</h3>
-                  <p className="text-gray-600 leading-relaxed">
+                <div className="text-center sm:text-left">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>Chef Karolain Rondón</h3>
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                     Chef pastelera venezolana con 15 años de experiencia (8 profesional).
                     Graduada del Instituto Venezolano Gastronómico (2018) y formada en
                     hoteles como Pestana Caracas, Altamira Village y Waldorf. Enseña con
@@ -459,7 +514,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
 
           {/* Panel lateral */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24">
+            <div className="lg:sticky lg:top-24">
               {renderSidePanel()}
 
               {/* Compartir */}

@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { UserIcon } from './Icons';
 
+// ── Iconos ──────────────────────────────────────────────────────
 const HomeIcon = ({ className = "w-6 h-6" }) => (
   <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
@@ -54,6 +55,29 @@ interface NavbarProps {
 export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // Bloquear scroll del body cuando menú móvil está abierto
+  useEffect(() => {
+    if (menuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
+
+  // Cerrar menú al cambiar tamaño de ventana a desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1280) {
+        setMenuOpen(false);
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   const handleNavigate = (page: string) => {
     onNavigate(page);
     setMenuOpen(false);
@@ -74,70 +98,102 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-20">
+      {/* ══════════════════════════════════════════════════
+          NAVBAR PRINCIPAL
+          Móvil/Tablet (< 1280px): Logo + Ingresar + Hamburguesa
+          Desktop (≥ 1280px): Todo visible
+      ══════════════════════════════════════════════════ */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 w-full">
+        <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-16 sm:h-20 gap-2">
 
-            {/* ── LOGO ── */}
+            {/* ══════════════════════════════════════════
+                LOGO - Siempre visible, adaptable
+            ══════════════════════════════════════════ */}
             <button
               onClick={() => handleNavigate('home')}
-              className="flex items-center space-x-3 group cursor-pointer flex-shrink-0"
+              className="flex items-center gap-2 sm:gap-3 group cursor-pointer flex-shrink-0 min-w-0"
+              aria-label="Ir al inicio"
             >
-              <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-white border border-[#F59E0B] flex items-center justify-center shadow-sm group-hover:shadow-lg transition-all transform group-hover:scale-105">
-                <div className="flex items-center gap-1">
-                  <span className="text-[#F59E0B] text-base sm:text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif" }}>K</span>
-                  <span className="w-[1px] h-4 sm:h-5 bg-[#F59E0B]/70" />
-                  <span className="text-[#F59E0B] text-base sm:text-lg font-semibold" style={{ fontFamily: "'Playfair Display', serif" }}>R</span>
+              {/* Círculo con KR */}
+              <div className="w-10 h-10 sm:w-11 sm:h-11 md:w-12 md:h-12 rounded-full bg-white border-2 border-[#F59E0B] flex items-center justify-center shadow-sm group-hover:shadow-lg transition-all transform group-hover:scale-105 flex-shrink-0">
+                <div className="flex items-center gap-0.5 sm:gap-1">
+                  <span 
+                    className="text-[#F59E0B] text-sm sm:text-base md:text-lg font-bold leading-none" 
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    K
+                  </span>
+                  <span className="w-px h-3 sm:h-4 md:h-5 bg-[#F59E0B]/70" />
+                  <span 
+                    className="text-[#F59E0B] text-sm sm:text-base md:text-lg font-bold leading-none" 
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    R
+                  </span>
                 </div>
               </div>
-              <div className="hidden md:flex flex-col">
-                <h1 className="text-xl font-bold text-gray-900 tracking-tight leading-tight" style={{ fontFamily: "'Playfair Display', serif" }}>
+
+              {/* Texto del logo - Visible desde sm (640px+) */}
+              <div className="hidden sm:flex flex-col min-w-0">
+                <h1 
+                  className="text-sm md:text-base lg:text-lg xl:text-xl font-bold text-gray-900 tracking-tight leading-tight truncate" 
+                  style={{ fontFamily: "'Playfair Display', serif" }}
+                >
                   Chef Karolain Rondón
                 </h1>
-                <p className="text-xs text-gray-600 font-light tracking-widest uppercase" style={{ fontFamily: "'Montserrat', sans-serif", fontSize: '0.65rem' }}>
+                <p 
+                  className="text-[9px] md:text-[10px] lg:text-xs text-gray-600 font-light tracking-widest uppercase truncate" 
+                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                >
                   Academia de Repostería
                 </p>
               </div>
             </button>
 
             {/* ══════════════════════════════════════════
-                NAVEGACIÓN DESKTOP (lg+)
+                NAVEGACIÓN DESKTOP (xl+ : ≥1280px)
                 Todos los íconos con texto
             ══════════════════════════════════════════ */}
-            <div className="hidden lg:flex items-center space-x-2">
+            <div className="hidden xl:flex items-center gap-1">
               {navItems.map(({ id, label, Icon }) => (
                 <button
                   key={id}
                   onClick={() => handleNavigate(id)}
-                  className={`cursor-pointer flex flex-col items-center justify-center p-3 rounded-xl transition-all ${
+                  className={`cursor-pointer flex flex-col items-center justify-center px-3 py-2 rounded-xl transition-all min-w-[60px] ${
                     currentPage === id
-                      ? 'bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] text-white shadow-md'
+                      ? 'bg-gradient-primary text-white shadow-md'
                       : 'text-gray-600 hover:bg-gray-50'
                   }`}
                   title={label}
+                  aria-label={label}
+                  aria-current={currentPage === id ? 'page' : undefined}
                 >
-                  <Icon className="w-6 h-6" />
-                  <span className="text-[10px] mt-0.5 font-medium" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  <Icon className="w-5 h-5" />
+                  <span 
+                    className="text-[10px] mt-0.5 font-medium" 
+                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  >
                     {label}
                   </span>
                 </button>
               ))}
 
               {/* Login/Dashboard Desktop */}
-              <div className="ml-4 pl-4 border-l border-gray-200 flex items-center gap-2">
+              <div className="ml-3 pl-3 border-l border-gray-200 flex items-center gap-2">
                 {isLoggedIn ? (
                   <>
                     <button
                       onClick={() => handleNavigate('dashboard')}
-                      className="cursor-pointer flex items-center space-x-2 bg-gradient-to-r from-[#14B8A6] to-[#0D9488] text-white px-6 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm"
+                      className="cursor-pointer flex items-center gap-2 bg-gradient-secondary text-white px-4 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm whitespace-nowrap"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
-                      <UserIcon className="w-5 h-5" />
+                      <UserIcon className="w-4 h-4" />
                       <span>Mi Panel</span>
                     </button>
                     <button
                       onClick={onLogout}
-                      className="cursor-pointer inline-flex items-center px-4 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                      className="cursor-pointer inline-flex items-center px-4 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
                       Salir
@@ -146,19 +202,20 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
                 ) : (
                   <button
                     onClick={() => handleNavigate('login')}
-                    className="cursor-pointer flex items-center space-x-2 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white px-6 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm"
+                    className="cursor-pointer flex items-center gap-2 bg-gradient-primary text-white px-5 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm whitespace-nowrap"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
-                    <UserIcon className="w-5 h-5" />
+                    <UserIcon className="w-4 h-4" />
                     <span>Ingresar</span>
                   </button>
                 )}
               </div>
 
+              {/* Admin Desktop */}
               {isAdmin && (
                 <button
                   onClick={() => handleNavigate('admin')}
-                  className="cursor-pointer ml-2 flex items-center px-4 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors"
+                  className="cursor-pointer ml-2 flex items-center px-3 py-2.5 rounded-full border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
                 >
                   🔐 Admin
@@ -167,36 +224,42 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
             </div>
 
             {/* ══════════════════════════════════════════
-                NAVEGACIÓN MÓVIL (< lg)
+                NAVEGACIÓN MÓVIL/TABLET (< 1280px)
                 Solo Ingresar + Hamburguesa
             ══════════════════════════════════════════ */}
-            <div className="flex lg:hidden items-center gap-2">
+            <div className="flex xl:hidden items-center gap-2 flex-shrink-0">
 
+              {/* Botón Login/Panel */}
               {isLoggedIn ? (
                 <button
                   onClick={() => handleNavigate('dashboard')}
-                  className="cursor-pointer flex items-center justify-center w-11 h-11 bg-gradient-to-r from-[#14B8A6] to-[#0D9488] text-white rounded-full shadow-md hover:shadow-lg transition-all"
+                  className="cursor-pointer flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 bg-gradient-secondary text-white rounded-full shadow-md hover:shadow-lg transition-all"
+                  aria-label="Mi Panel"
                   title="Mi Panel"
                 >
-                  <UserIcon className="w-5 h-5" />
+                  <UserIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                 </button>
               ) : (
                 <button
                   onClick={() => handleNavigate('login')}
-                  className="cursor-pointer flex items-center gap-1.5 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white px-3 py-2 rounded-full shadow-md hover:shadow-lg transition-all font-semibold text-xs sm:text-sm"
+                  className="cursor-pointer flex items-center gap-1 sm:gap-1.5 bg-gradient-primary text-white px-2.5 sm:px-3 md:px-4 py-2 sm:py-2.5 rounded-full shadow-md hover:shadow-lg transition-all font-semibold text-xs sm:text-sm whitespace-nowrap"
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  aria-label="Iniciar sesión"
                 >
-                  <UserIcon className="w-4 h-4" />
+                  <UserIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                   <span>Ingresar</span>
                 </button>
               )}
 
+              {/* Botón hamburguesa */}
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="cursor-pointer flex items-center justify-center w-11 h-11 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all"
-                aria-label="Abrir menú"
+                className="cursor-pointer flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all flex-shrink-0"
+                aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
+                aria-expanded={menuOpen}
+                aria-controls="mobile-menu"
               >
-                {menuOpen ? <CloseIcon /> : <MenuIcon />}
+                {menuOpen ? <CloseIcon className="w-5 h-5 sm:w-6 sm:h-6" /> : <MenuIcon className="w-5 h-5 sm:w-6 sm:h-6" />}
               </button>
             </div>
 
@@ -204,35 +267,46 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
         </div>
       </nav>
 
-      {/* ══════════════════════════════════════════
-          MENÚ MÓVIL DESPLEGABLE
-      ══════════════════════════════════════════ */}
+      {/* ══════════════════════════════════════════════════
+          MENÚ MÓVIL DESPLEGABLE (< 1280px)
+      ══════════════════════════════════════════════════ */}
       {menuOpen && (
         <>
+          {/* Overlay oscuro - cierra menú al tocar */}
           <div
-            className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+            className="fixed inset-0 bg-black/50 z-40 xl:hidden"
             onClick={() => setMenuOpen(false)}
+            aria-hidden="true"
           />
 
-          <div className="fixed top-20 left-4 right-4 z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 lg:hidden overflow-hidden">
-            <div className="p-4 space-y-1">
+          {/* Panel del menú */}
+          <div
+            id="mobile-menu"
+            className="fixed top-16 sm:top-20 left-3 right-3 sm:left-4 sm:right-4 z-50 bg-white rounded-2xl shadow-2xl border border-gray-100 xl:hidden overflow-hidden max-h-[calc(100vh-5rem)] overflow-y-auto"
+            role="navigation"
+            aria-label="Menú principal"
+          >
+            <div className="p-3 sm:p-4 space-y-1">
 
+              {/* Items de navegación */}
               {navItems.map(({ id, label, Icon }) => (
                 <button
                   key={id}
                   onClick={() => handleNavigate(id)}
                   className={`w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                     currentPage === id
-                      ? 'bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-gradient-primary text-white shadow-md'
+                      : 'text-gray-700 hover:bg-gray-50 active:bg-gray-100'
                   }`}
                   style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  aria-current={currentPage === id ? 'page' : undefined}
                 >
-                  <Icon className="w-5 h-5" />
-                  <span className="font-medium">{label}</span>
+                  <Icon className="w-5 h-5 flex-shrink-0" />
+                  <span className="font-medium text-sm sm:text-base">{label}</span>
                 </button>
               ))}
 
+              {/* Sección si está logueado */}
               {isLoggedIn && (
                 <>
                   <div className="border-t border-gray-100 my-2" />
@@ -240,23 +314,23 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
                   {isAdmin && (
                     <button
                       onClick={() => handleNavigate('admin')}
-                      className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 transition-all"
+                      className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-all"
                       style={{ fontFamily: "'Montserrat', sans-serif" }}
                     >
-                      <span className="text-lg">🔐</span>
-                      <span className="font-medium">Panel Admin</span>
+                      <span className="text-lg flex-shrink-0">🔐</span>
+                      <span className="font-medium text-sm sm:text-base">Panel Admin</span>
                     </button>
                   )}
 
                   <button
                     onClick={handleLogout}
-                    className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 transition-all"
+                    className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 active:bg-red-100 transition-all"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                     </svg>
-                    <span className="font-medium">Cerrar sesión</span>
+                    <span className="font-medium text-sm sm:text-base">Cerrar sesión</span>
                   </button>
                 </>
               )}

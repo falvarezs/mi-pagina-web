@@ -124,7 +124,7 @@ export function App() {
   // ── Pantalla de carga inicial ─────────────────────────────────────
   if (authLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FEF3C7]/30 to-white">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FEF3C7]/30 to-white px-4">
         <div className="text-center">
           <div className="w-16 h-16 bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
             <span
@@ -200,7 +200,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col w-full overflow-x-hidden">
       <Navbar
         onNavigate={navigate}
         currentPage={currentPage}
@@ -208,7 +208,7 @@ export function App() {
         isAdmin={isAdmin}
         onLogout={handleLogout}
       />
-      <main className="flex-1 pt-20">
+      <main className="flex-1 pt-16 sm:pt-20 w-full overflow-x-hidden">
         {renderPage()}
       </main>
       <Footer onNavigate={navigate} />
@@ -226,14 +226,14 @@ function LegalPage({
 }) {
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-gray-900 text-white py-12 px-4">
+      <div className="bg-gray-900 text-white py-8 sm:py-12 px-4">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold">{title}</h1>
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">{title}</h1>
         </div>
       </div>
-      <div className="max-w-4xl mx-auto px-4 py-12">
-        <div className="bg-white rounded-2xl shadow-lg p-8 prose prose-lg max-w-none">
-          <p className="text-gray-600 mb-4">
+      <div className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
+        <div className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 prose prose-sm sm:prose-base lg:prose-lg max-w-none">
+          <p className="text-gray-600 mb-4 text-sm sm:text-base">
             Última actualización: {new Date().toLocaleDateString('es-ES')}
           </p>
           <h2>1. Introducción</h2>
