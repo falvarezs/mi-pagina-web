@@ -22,6 +22,76 @@ interface CourseProgress {
   percent: number;
 }
 
+// ── Estilos inline de respaldo (Safari iOS fix) ──────────────
+const logoutButtonStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '10px 20px',
+  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '14px',
+  transition: 'all 0.2s',
+  minHeight: '40px',
+};
+
+const exploreButtonStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '14px 32px',
+  background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
+  backgroundColor: '#FF6B6B',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '15px',
+  minHeight: '48px',
+  transition: 'all 0.2s',
+};
+
+const watchCourseButtonStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  padding: '12px 32px',
+  background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
+  backgroundColor: '#FF6B6B',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '15px',
+  minHeight: '48px',
+  width: '100%',
+  marginTop: '16px',
+  transition: 'all 0.2s',
+};
+
+const rejectActionButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '8px 16px',
+  backgroundColor: '#dc2626',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '8px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '13px',
+  minHeight: '36px',
+  transition: 'all 0.2s',
+};
+
 export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPageProps) {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +147,6 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
 
       setUserId(user.id);
 
-      // Cargar compras
       const { data: purchasesData } = await supabase
         .from('purchases')
         .select('*')
@@ -86,7 +155,6 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
       if (purchasesData) {
         setPurchases(purchasesData);
 
-        // Cargar progreso de cada curso aprobado
         const approvedIds = purchasesData
           .filter(p => p.status === 'approved')
           .map(p => p.course_id);
@@ -161,25 +229,31 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
     .filter(Boolean);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white py-12 px-4">
+      {/* Header con fallback de color */}
+      <div 
+        className="text-white py-8 sm:py-12 px-4"
+        style={{ 
+          background: 'linear-gradient(to right, #FF6B6B, #F59E0B)',
+          backgroundColor: '#FF6B6B'
+        }}
+      >
         <div className="max-w-5xl mx-auto">
           <div className="flex justify-between items-start flex-wrap gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold mb-2">
+            <div className="min-w-0 flex-1">
+              <h1 className="text-2xl sm:text-3xl font-bold mb-2">
                 Mi Panel de Aprendizaje
               </h1>
-              <p className="opacity-90 text-sm">{userEmail}</p>
+              <p className="opacity-90 text-sm break-words">{userEmail}</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-shrink-0">
               {refreshing && (
-                <span className="text-xs text-white/80">Actualizando...</span>
+                <span className="text-xs text-white/80 hidden sm:inline">Actualizando...</span>
               )}
               <button
                 onClick={onLogout}
-                className="cursor-pointer px-4 py-2 bg-white/20 hover:bg-white/30 rounded-xl text-sm font-semibold transition-all"
+                style={logoutButtonStyle}
               >
                 Cerrar Sesión
               </button>
@@ -188,7 +262,7 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
         </div>
       </div>
 
-      <div className="max-w-5xl mx-auto px-4 py-10">
+      <div className="max-w-5xl mx-auto px-4 py-8 sm:py-10">
 
         {loading ? (
           <div className="text-center py-20">
@@ -199,7 +273,7 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
           <>
             {/* Sin cursos */}
             {approvedCourses.length === 0 && pendingCourses.length === 0 && rejectedCourses.length === 0 && (
-              <div className="bg-white rounded-2xl shadow-md p-10 text-center">
+              <div className="bg-white rounded-2xl shadow-md p-6 sm:p-10 text-center">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
@@ -213,7 +287,7 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
                 </p>
                 <button
                   onClick={() => onNavigate('courses')}
-                  className="cursor-pointer px-8 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-semibold rounded-xl hover:shadow-lg transition-all"
+                  style={exploreButtonStyle}
                 >
                   Explorar Cursos
                 </button>
@@ -237,7 +311,6 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
                       <div key={course.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all">
                         <div className="flex flex-col sm:flex-row">
 
-                          {/* Thumbnail */}
                           <div className="relative w-full sm:w-52 h-44 sm:h-auto flex-shrink-0">
                             <img
                               src={course.thumbnail}
@@ -254,8 +327,7 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
                             )}
                           </div>
 
-                          {/* Info */}
-                          <div className="flex-1 p-6 flex flex-col justify-between">
+                          <div className="flex-1 p-5 sm:p-6 flex flex-col justify-between">
                             <div>
                               <div className="flex items-center gap-2 mb-2 flex-wrap">
                                 <span className="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">
@@ -265,14 +337,13 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
                                   {course.duration}
                                 </span>
                               </div>
-                              <h3 className="font-bold text-lg text-gray-900 mb-1">
+                              <h3 className="font-bold text-base sm:text-lg text-gray-900 mb-1">
                                 {course.title}
                               </h3>
                               <p className="text-gray-500 text-sm mb-4">
                                 {course.shortDescription}
                               </p>
 
-                              {/* Barra de progreso */}
                               <div className="mb-2">
                                 <div className="flex justify-between items-center mb-1">
                                   <span className="text-xs text-gray-500 font-semibold">
@@ -284,8 +355,12 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
                                 </div>
                                 <div className="w-full bg-gray-200 rounded-full h-2">
                                   <div
-                                    className="bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] h-2 rounded-full transition-all duration-500"
-                                    style={{ width: `${percent}%` }}
+                                    className="h-2 rounded-full transition-all duration-500"
+                                    style={{ 
+                                      width: `${percent}%`,
+                                      background: 'linear-gradient(to right, #FF6B6B, #F59E0B)',
+                                      backgroundColor: '#FF6B6B'
+                                    }}
                                   />
                                 </div>
                                 <p className="text-xs text-gray-400 mt-1">
@@ -294,15 +369,14 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
                               </div>
                             </div>
 
-                            {/* Botón ver curso */}
                             <button
                               onClick={() => onNavigate('watch-course', { courseId: String(course.id) })}
-                              className="cursor-pointer mt-4 w-full sm:w-auto px-8 py-3 bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white font-semibold rounded-xl hover:shadow-lg transition-all flex items-center justify-center gap-2"
+                              style={watchCourseButtonStyle}
                             >
-                              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                              <svg style={{ width: '20px', height: '20px' }} fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z"/>
                               </svg>
-                              {percent > 0 ? 'Continuar Curso' : 'Comenzar Curso'}
+                              <span>{percent > 0 ? 'Continuar Curso' : 'Comenzar Curso'}</span>
                             </button>
                           </div>
                         </div>
@@ -321,15 +395,15 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
                 </h2>
                 <div className="space-y-3">
                   {pendingCourses.map((course: any) => (
-                    <div key={course.id} className="bg-amber-50 border border-amber-200 rounded-2xl p-5 flex items-center gap-4">
+                    <div key={course.id} className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 flex items-center gap-4">
                       <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
                         <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-900">{course.title}</h3>
-                        <p className="text-amber-700 text-sm">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-gray-900 text-sm sm:text-base">{course.title}</h3>
+                        <p className="text-amber-700 text-xs sm:text-sm">
                           Tu pago está siendo verificado (24-48 horas hábiles)
                         </p>
                       </div>
@@ -347,20 +421,20 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
                 </h2>
                 <div className="space-y-3">
                   {rejectedCourses.map((course: any) => (
-                    <div key={course.id} className="bg-red-50 border border-red-200 rounded-2xl p-5 flex items-center gap-4">
+                    <div key={course.id} className="bg-red-50 border border-red-200 rounded-2xl p-4 sm:p-5 flex items-center gap-4">
                       <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
                         <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                         </svg>
                       </div>
-                      <div className="flex-1">
-                        <h3 className="font-bold text-gray-900">{course.title}</h3>
-                        <p className="text-red-700 text-sm mb-3">
+                      <div className="flex-1 min-w-0">
+                        <h3 className="font-bold text-gray-900 text-sm sm:text-base">{course.title}</h3>
+                        <p className="text-red-700 text-xs sm:text-sm mb-3">
                           Tu comprobante fue rechazado. Por favor envía uno nuevo.
                         </p>
                         <button
                           onClick={() => onNavigate('checkout', { courseId: String(course.id) })}
-                          className="cursor-pointer px-4 py-2 bg-red-600 text-white text-sm font-semibold rounded-lg hover:bg-red-700 transition-colors"
+                          style={rejectActionButton}
                         >
                           Enviar nuevo comprobante
                         </button>

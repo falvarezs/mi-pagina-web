@@ -7,6 +7,125 @@ interface WatchCoursePageProps {
   onNavigate: (page: string, data?: any) => void;
 }
 
+// ── Estilos inline de respaldo (Safari iOS fix) ──────────────
+const markCompletedButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  padding: '12px 16px',
+  backgroundColor: '#16a34a',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '14px',
+  minHeight: '44px',
+  transition: 'all 0.2s',
+};
+
+const markCompletedDoneButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  padding: '12px 16px',
+  backgroundColor: 'rgba(34, 197, 94, 0.2)',
+  color: '#4ade80',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: '1px solid rgba(34, 197, 94, 0.3)',
+  cursor: 'not-allowed',
+  fontSize: '14px',
+  minHeight: '44px',
+};
+
+const navButtonActive: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  padding: '12px 16px',
+  backgroundColor: '#374151',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '14px',
+  minHeight: '44px',
+  transition: 'all 0.2s',
+};
+
+const navButtonDisabled: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  padding: '12px 16px',
+  backgroundColor: '#374151',
+  color: '#6b7280',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: 'none',
+  cursor: 'not-allowed',
+  fontSize: '14px',
+  minHeight: '44px',
+};
+
+const nextButtonStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  padding: '12px 16px',
+  background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
+  backgroundColor: '#FF6B6B',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '14px',
+  minHeight: '44px',
+  transition: 'all 0.2s',
+};
+
+const backButtonStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  width: '100%',
+  padding: '12px 16px',
+  backgroundColor: '#374151',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '14px',
+  minHeight: '44px',
+  transition: 'all 0.2s',
+};
+
+const courseNotFoundButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '12px 24px',
+  backgroundColor: '#FF6B6B',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '12px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '15px',
+  minHeight: '48px',
+  transition: 'all 0.2s',
+};
+
 export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) {
   const [courseAllowed, setCourseAllowed] = useState(false);
   const [checkingAccess, setCheckingAccess] = useState(true);
@@ -19,12 +138,10 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
   const allLessons = course ? course.modules.flatMap(m => m.lessons) : [];
   const currentLesson = allLessons[activeLesson];
 
-  // Calcular progreso
   const progressPercent = allLessons.length > 0
     ? Math.round((completedLessons.size / allLessons.length) * 100)
     : 0;
 
-  // Verificar acceso y cargar progreso
   useEffect(() => {
     const checkAccess = async () => {
       try {
@@ -51,7 +168,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
         } else {
           setCourseAllowed(true);
 
-          // Cargar progreso guardado
           const { data: progress } = await supabase
             .from('lesson_progress')
             .select('lesson_id')
@@ -72,7 +188,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
     checkAccess();
   }, [course, courseId]);
 
-  // Marcar lección como completada
   const markAsCompleted = useCallback(async (lessonId: string) => {
     if (!userId || completedLessons.has(lessonId)) return;
 
@@ -97,9 +212,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
     }
   }, [userId, courseId, completedLessons]);
 
-  // Cambiar lección
   const changeLesson = (index: number) => {
-    // Marcar la lección actual como completada al cambiar
     if (currentLesson) {
       markAsCompleted(currentLesson.id);
     }
@@ -107,7 +220,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Pantalla: Curso no encontrado
+  // Curso no encontrado
   if (!course) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
@@ -115,7 +228,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
           <h2 className="text-2xl font-bold text-gray-900 mb-4">Curso no encontrado</h2>
           <button
             onClick={() => onNavigate('dashboard')}
-            className="bg-[#FF6B6B] text-white px-6 py-3 rounded-xl hover:bg-[#e55a5a] transition-all cursor-pointer"
+            style={courseNotFoundButton}
           >
             Volver a Mis Cursos
           </button>
@@ -124,7 +237,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
     );
   }
 
-  // Pantalla: Verificando acceso
   if (checkingAccess) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
@@ -136,11 +248,10 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
     );
   }
 
-  // Pantalla: Sin acceso
   if (!courseAllowed) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
-        <div className="bg-gray-800 rounded-2xl p-8 text-center max-w-lg">
+        <div className="bg-gray-800 rounded-2xl p-6 sm:p-8 text-center max-w-lg">
           <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
@@ -152,7 +263,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
           </p>
           <button
             onClick={() => onNavigate('dashboard')}
-            className="cursor-pointer bg-[#FF6B6B] text-white px-6 py-3 rounded-xl hover:bg-[#e55a5a] transition-all"
+            style={courseNotFoundButton}
           >
             Volver a Mis Cursos
           </button>
@@ -161,8 +272,12 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
     );
   }
 
+  const isLessonCompleted = completedLessons.has(currentLesson?.id || '');
+  const isPrevDisabled = activeLesson === 0;
+  const isNextDisabled = activeLesson === allLessons.length - 1;
+
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen bg-gray-900 w-full overflow-x-hidden">
 
       {/* Video Player */}
       <div className="w-full bg-black">
@@ -190,14 +305,14 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
           <div className="lg:col-span-2 space-y-4">
 
             {/* Info de la lección */}
-            <div className="bg-gray-800 rounded-2xl p-6">
+            <div className="bg-gray-800 rounded-2xl p-5 sm:p-6">
               <p className="text-[#FF6B6B] text-sm uppercase tracking-wider mb-2 font-semibold">
                 {course.title}
               </p>
-              <h1 className="text-white text-2xl font-bold mb-3">
+              <h1 className="text-white text-xl sm:text-2xl font-bold mb-3">
                 {currentLesson?.title || 'Introducción'}
               </h1>
-              <div className="flex flex-wrap items-center gap-4 text-gray-400 text-sm">
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-gray-400 text-xs sm:text-sm">
                 <span className="flex items-center gap-1">
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -205,7 +320,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                   {currentLesson?.duration || ''}
                 </span>
                 <span>Lección {activeLesson + 1} de {allLessons.length}</span>
-                {completedLessons.has(currentLesson?.id || '') && (
+                {isLessonCompleted && (
                   <span className="flex items-center gap-1 text-green-400">
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -219,34 +334,26 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
               </div>
             </div>
 
-            {/* Botón marcar completada + navegación */}
+            {/* Botones de acción */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
 
               {/* Marcar como vista */}
               <button
                 onClick={() => currentLesson && markAsCompleted(currentLesson.id)}
-                disabled={completedLessons.has(currentLesson?.id || '')}
-                className={`cursor-pointer py-3 px-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 ${
-                  completedLessons.has(currentLesson?.id || '')
-                    ? 'bg-green-500/20 text-green-400 border border-green-500/30 cursor-not-allowed'
-                    : 'bg-green-600 text-white hover:bg-green-700'
-                }`}
+                disabled={isLessonCompleted}
+                style={isLessonCompleted ? markCompletedDoneButton : markCompletedButton}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                {completedLessons.has(currentLesson?.id || '') ? 'Ya vista ✓' : 'Marcar como vista'}
+                {isLessonCompleted ? 'Ya vista ✓' : 'Marcar como vista'}
               </button>
 
               {/* Anterior */}
               <button
                 onClick={() => changeLesson(Math.max(0, activeLesson - 1))}
-                disabled={activeLesson === 0}
-                className={`cursor-pointer py-3 px-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 ${
-                  activeLesson === 0
-                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-gray-700 text-white hover:bg-gray-600'
-                }`}
+                disabled={isPrevDisabled}
+                style={isPrevDisabled ? navButtonDisabled : navButtonActive}
               >
                 ← Anterior
               </button>
@@ -254,12 +361,8 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
               {/* Siguiente */}
               <button
                 onClick={() => changeLesson(Math.min(allLessons.length - 1, activeLesson + 1))}
-                disabled={activeLesson === allLessons.length - 1}
-                className={`cursor-pointer py-3 px-4 rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 ${
-                  activeLesson === allLessons.length - 1
-                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
-                    : 'bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white hover:shadow-lg hover:scale-105'
-                }`}
+                disabled={isNextDisabled}
+                style={isNextDisabled ? navButtonDisabled : nextButtonStyle}
               >
                 Siguiente →
               </button>
@@ -273,8 +376,12 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
               </div>
               <div className="w-full bg-gray-700 rounded-full h-3 mb-2">
                 <div
-                  className="bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] h-3 rounded-full transition-all duration-500"
-                  style={{ width: `${progressPercent}%` }}
+                  className="h-3 rounded-full transition-all duration-500"
+                  style={{ 
+                    width: `${progressPercent}%`,
+                    background: 'linear-gradient(to right, #FF6B6B, #F59E0B)',
+                    backgroundColor: '#FF6B6B'
+                  }}
                 />
               </div>
               <p className="text-gray-400 text-xs">
@@ -291,7 +398,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
             </div>
 
             {/* Descripción del curso */}
-            <div className="bg-gray-800 rounded-2xl p-6">
+            <div className="bg-gray-800 rounded-2xl p-5 sm:p-6">
               <h3 className="text-white font-bold text-lg mb-3">Sobre este curso</h3>
               <p className="text-gray-300 text-sm leading-relaxed">
                 {course.fullDescription}
@@ -301,7 +408,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
 
           {/* Lista de lecciones */}
           <div className="lg:col-span-1">
-            <div className="bg-gray-800 rounded-2xl p-4 sticky top-24">
+            <div className="bg-gray-800 rounded-2xl p-4 lg:sticky lg:top-24">
               <div className="flex items-center justify-between mb-4 px-2">
                 <h3 className="text-white font-bold text-lg">Contenido</h3>
                 <span className="text-xs text-gray-400 bg-gray-700 px-2 py-1 rounded-full">
@@ -310,17 +417,20 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
               </div>
 
               {/* Mini barra de progreso */}
-              <div className="w-full bg-gray-700 rounded-full h-1.5 mb-4 mx-2" style={{ width: 'calc(100% - 16px)' }}>
+              <div className="w-full bg-gray-700 rounded-full h-1.5 mb-4">
                 <div
-                  className="bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] h-1.5 rounded-full transition-all duration-500"
-                  style={{ width: `${progressPercent}%` }}
+                  className="h-1.5 rounded-full transition-all duration-500"
+                  style={{ 
+                    width: `${progressPercent}%`,
+                    background: 'linear-gradient(to right, #FF6B6B, #F59E0B)',
+                    backgroundColor: '#FF6B6B'
+                  }}
                 />
               </div>
 
               <div className="space-y-2 max-h-[55vh] overflow-y-auto pr-1">
                 {course.modules.map((module, moduleIndex) => (
                   <div key={module.id}>
-                    {/* Título del módulo */}
                     <div className="px-3 py-2">
                       <p className="text-[#F59E0B] text-xs uppercase tracking-wider font-bold">
                         Módulo {moduleIndex + 1}
@@ -330,7 +440,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                       </p>
                     </div>
 
-                    {/* Lecciones */}
                     {module.lessons.map((lesson) => {
                       const globalIndex = allLessons.findIndex(l => l.id === lesson.id);
                       const isActive = globalIndex === activeLesson;
@@ -346,7 +455,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                               : 'hover:bg-gray-700'
                           }`}
                         >
-                          {/* Icono play o check */}
                           <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
                             isCompleted
                               ? 'bg-green-500 text-white'
@@ -365,7 +473,6 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                             )}
                           </div>
 
-                          {/* Info de la lección */}
                           <div className="flex-1 min-w-0">
                             <p className={`text-sm truncate ${
                               isActive ? 'text-white font-semibold' : 'text-gray-300'
@@ -387,9 +494,9 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
               <div className="mt-4 pt-4 border-t border-gray-700">
                 <button
                   onClick={() => onNavigate('dashboard')}
-                  className="cursor-pointer w-full py-3 bg-gray-700 text-white rounded-xl font-semibold hover:bg-gray-600 transition-all flex items-center justify-center gap-2 text-sm"
+                  style={backButtonStyle}
                 >
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                   </svg>
                   Volver a Mis Cursos

@@ -37,7 +37,6 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
   }, []);
 
   const handleViewCourse = (slug: string, courseId: number) => {
-    // Si el curso está activado, ir directo a verlo
     if (approvedCourseIds.includes(courseId)) {
       onNavigate('watch-course', { courseId: String(courseId) });
     } else {
@@ -46,26 +45,38 @@ export function CoursesPage({ onNavigate }: CoursesPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-[#FF6B6B] to-[#F59E0B] text-white py-16 px-4">
+      {/* Header con fallback de color para Safari */}
+      <div 
+        className="text-white py-10 sm:py-14 lg:py-16 px-4"
+        style={{ 
+          background: 'linear-gradient(to right, #FF6B6B, #F59E0B)',
+          backgroundColor: '#FF6B6B'
+        }}
+      >
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+          <h1 
+            className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 sm:mb-4"
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
             Catálogo de Cursos
           </h1>
-          <p className="text-xl opacity-90">
+          <p 
+            className="text-base sm:text-lg lg:text-xl opacity-90"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             Descubre todos nuestros cursos de repostería profesional
           </p>
         </div>
       </div>
 
       {/* Grid de cursos */}
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="text-sm text-gray-600 mb-6">
+      <div className="max-w-7xl mx-auto px-4 py-8 sm:py-10 lg:py-12">
+        <div className="text-sm text-gray-600 mb-5 sm:mb-6">
           {courses.length} {courses.length === 1 ? 'curso encontrado' : 'cursos encontrados'}
         </div>
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
           {courses.map(course => (
             <CourseCard
               key={course.id}

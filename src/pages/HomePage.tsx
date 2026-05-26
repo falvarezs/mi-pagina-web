@@ -5,18 +5,73 @@ interface HomePageProps {
   onNavigate: (page: string, data?: any) => void;
 }
 
+// ── Estilos inline de respaldo (Safari iOS fix) ──────────────
+const primaryGradientButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  padding: '14px 28px',
+  background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
+  backgroundColor: '#FF6B6B',
+  color: '#ffffff',
+  fontWeight: 700,
+  borderRadius: '9999px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '16px',
+  fontFamily: "'Montserrat', sans-serif",
+  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.3s',
+  minHeight: '48px',
+};
+
+const secondaryWhiteButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '14px 28px',
+  backgroundColor: '#ffffff',
+  color: '#1f2937',
+  fontWeight: 600,
+  borderRadius: '9999px',
+  border: '2px solid #e5e7eb',
+  cursor: 'pointer',
+  fontSize: '16px',
+  fontFamily: "'Montserrat', sans-serif",
+  transition: 'all 0.3s',
+  minHeight: '48px',
+};
+
+const ctaWhiteButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '12px',
+  padding: '18px 36px',
+  backgroundColor: '#ffffff',
+  color: '#FF6B6B',
+  fontWeight: 700,
+  borderRadius: '9999px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '17px',
+  fontFamily: "'Montserrat', sans-serif",
+  boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)',
+  transition: 'all 0.3s',
+  minHeight: '56px',
+};
+
 export function HomePage({ onNavigate }: HomePageProps) {
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
 
-      {/* ══════════════════════════════════════════════════
-          HERO SECTION (REDUCIDO el padding vertical)
-      ══════════════════════════════════════════════════ */}
+      {/* ══ HERO SECTION ══ */}
       <section className="relative bg-gradient-to-br from-white via-[#FEF3C7]/30 to-white py-12 sm:py-16 lg:py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
 
-            {/* ── Left Column - Texto ── */}
+            {/* Left Column - Texto */}
             <div className="order-2 lg:order-1">
               <div className="inline-block mb-4 sm:mb-6">
                 <span
@@ -89,38 +144,30 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </div>
               </div>
 
-              {/* CTAs */}
+              {/* CTAs - CON ESTILOS INLINE PARA SAFARI */}
               <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 <button
                   onClick={() => onNavigate('courses')}
-                  className="cursor-pointer group px-6 sm:px-8 py-3 sm:py-4 text-white font-bold rounded-full hover:shadow-2xl transition-all duration-300 text-base sm:text-lg flex items-center justify-center gap-2 transform hover:scale-105"
-                  style={{ 
-                    background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
-                    fontFamily: "'Montserrat', sans-serif"
-                  }}
+                  style={primaryGradientButton}
                 >
                   <span>Ver Mis Cursos</span>
-                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg style={{ width: '20px', height: '20px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                   </svg>
                 </button>
                 <button
                   onClick={() => onNavigate('about')}
-                  className="cursor-pointer px-6 sm:px-8 py-3 sm:py-4 bg-white text-gray-800 font-semibold rounded-full hover:shadow-lg transition-all duration-300 border-2 border-gray-200 hover:border-gray-300 text-base sm:text-lg"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  style={secondaryWhiteButton}
                 >
                   Conoce Mi Historia
                 </button>
               </div>
             </div>
 
-            {/* ══════════════════════════════════════════════════
-                Right Column - IMAGEN CON BADGES
-            ══════════════════════════════════════════════════ */}
+            {/* Right Column - IMAGEN CON BADGES */}
             <div className="order-1 lg:order-2">
               <div className="relative w-64 sm:w-80 md:w-96 lg:w-full max-w-md mx-auto aspect-square">
 
-                {/* Imagen Principal */}
                 <div className="absolute inset-0 z-10">
                   <div className="w-full h-full rounded-full overflow-hidden shadow-2xl ring-4 sm:ring-8 ring-white/50 ring-offset-4 sm:ring-offset-8 ring-offset-[#FEF3C7]/20">
                     <img
@@ -131,13 +178,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   </div>
                 </div>
 
-                {/* Decoración de fondo */}
                 <div className="absolute -top-6 -right-6 w-40 sm:w-56 lg:w-72 h-40 sm:h-56 lg:h-72 bg-gradient-to-br from-[#FF6B6B]/20 to-[#F59E0B]/20 rounded-full blur-3xl -z-10"></div>
                 <div className="absolute -bottom-6 -left-6 w-40 sm:w-56 lg:w-72 h-40 sm:h-56 lg:h-72 bg-gradient-to-br from-[#14B8A6]/20 to-[#0D9488]/20 rounded-full blur-3xl -z-10"></div>
 
-                {/* BADGES PEGADOS A LA FOTO */}
-
-                {/* Badge 1: Chef Certificada - Top Right */}
+                {/* Badge 1: Chef Certificada */}
                 <div className="absolute top-[8%] -right-2 sm:right-2 lg:right-4 bg-white rounded-xl sm:rounded-2xl shadow-xl p-2 sm:p-3 lg:p-4 transform rotate-3 hover:rotate-0 transition-transform animate-float z-20">
                   <div className="flex items-center space-x-1 sm:space-x-2">
                     <AwardIcon className="w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-[#F59E0B]" />
@@ -148,12 +192,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   </div>
                 </div>
 
-                {/* Badge 2: Estudiantes - Bottom Left */}
+                {/* Badge 2: Estudiantes */}
                 <div className="absolute bottom-[10%] -left-2 sm:left-2 lg:left-4 bg-white rounded-xl sm:rounded-2xl shadow-xl p-2 sm:p-3 lg:p-4 transform -rotate-3 hover:rotate-0 transition-transform animate-float-delayed z-20">
                   <div className="flex items-center space-x-1 sm:space-x-2 lg:space-x-3">
                     <div 
                       className="w-6 h-6 sm:w-9 sm:h-9 lg:w-12 lg:h-12 rounded-full flex items-center justify-center flex-shrink-0"
-                      style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)' }}
+                      style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)', backgroundColor: '#FF6B6B' }}
                     >
                       <svg className="w-3 h-3 sm:w-5 sm:h-5 lg:w-6 lg:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -166,10 +210,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   </div>
                 </div>
 
-                {/* Badge 3: 15 Años - Top Left */}
+                {/* Badge 3: 15 Años */}
                 <div 
                   className="absolute top-[8%] -left-2 sm:left-2 lg:left-4 rounded-xl sm:rounded-2xl shadow-xl px-2 py-1 sm:px-3 sm:py-2 lg:px-5 lg:py-3 transform -rotate-6 hover:rotate-0 transition-transform animate-float-slow z-20"
-                  style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)', backgroundColor: '#FF6B6B' }}
                 >
                   <div className="text-center text-white">
                     <p className="text-base sm:text-xl lg:text-3xl font-bold leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>15</p>
@@ -182,10 +226,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   <AwardIcon className="w-4 h-4 sm:w-6 sm:h-6 lg:w-8 lg:h-8 text-[#F59E0B]" />
                 </div>
 
-                {/* Badge 5: 3 Cursos - Bottom Right */}
+                {/* Badge 5: 3 Cursos */}
                 <div 
                   className="absolute bottom-[10%] -right-2 sm:right-2 lg:right-4 rounded-xl sm:rounded-2xl shadow-xl px-2 py-1 sm:px-3 sm:py-2 lg:px-5 lg:py-3 transform rotate-6 hover:rotate-0 transition-transform animate-float-delayed-2 z-20"
-                  style={{ background: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)', backgroundColor: '#14B8A6' }}
                 >
                   <div className="text-white text-center">
                     <p className="text-base sm:text-xl lg:text-3xl font-bold leading-none" style={{ fontFamily: "'Playfair Display', serif" }}>3</p>
@@ -193,7 +237,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   </div>
                 </div>
 
-                {/* Badge 6: 98% Satisfacción - Bottom Center */}
+                {/* Badge 6: 98% Satisfacción */}
                 <div className="absolute -bottom-2 sm:-bottom-3 lg:-bottom-4 left-1/2 -translate-x-1/2 bg-white rounded-full shadow-xl px-3 py-1.5 sm:px-4 sm:py-2 lg:px-5 lg:py-3 hover:scale-110 transition-transform animate-float-slow z-20">
                   <div className="text-center">
                     <p 
@@ -204,7 +248,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                         backgroundClip: 'text',
-                        color: 'transparent'
+                        color: '#FF6B6B'
                       }}
                     >
                       98%
@@ -213,19 +257,17 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   </div>
                 </div>
 
-                {/* BADGES SOLO DESKTOP (lg+) */}
-
-                {/* Badge 7: 100% Online - Right Center */}
+                {/* Badge 7: 100% Online */}
                 <div 
                   className="hidden lg:block absolute right-0 top-1/2 translate-x-1/4 -translate-y-1/2 rounded-xl shadow-xl px-4 py-3 transform rotate-90 hover:rotate-0 transition-transform animate-float-delayed z-20"
-                  style={{ background: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)' }}
+                  style={{ background: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)', backgroundColor: '#14B8A6' }}
                 >
                   <div className="text-white text-center">
                     <p className="text-xs font-bold uppercase tracking-wider whitespace-nowrap" style={{ fontFamily: "'Montserrat', sans-serif" }}>100% Online</p>
                   </div>
                 </div>
 
-                {/* Badge 8: 8 Años Pro - Left Center */}
+                {/* Badge 8: 8 Años Pro */}
                 <div className="hidden lg:block absolute left-0 top-1/3 -translate-x-1/4 bg-white rounded-2xl shadow-xl px-4 py-3 transform -rotate-12 hover:rotate-0 transition-transform animate-float-slow z-20">
                   <div className="text-center">
                     <p className="text-2xl font-bold text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>8</p>
@@ -240,9 +282,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════
-          MIS ESPECIALIDADES (Padding reducido)
-      ══════════════════════════════════════════════════ */}
+      {/* ══ MIS ESPECIALIDADES ══ */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10 sm:mb-12 lg:mb-16">
@@ -259,7 +299,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
 
-            {/* Card 1 */}
             <div
               className="group bg-gradient-to-br from-white to-[#FEF3C7]/30 p-6 sm:p-8 rounded-3xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 cursor-pointer"
               onClick={() => onNavigate('courses')}
@@ -285,7 +324,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </div>
             </div>
 
-            {/* Card 2 */}
             <div
               className="group bg-gradient-to-br from-white to-[#FEF3C7]/30 p-6 sm:p-8 rounded-3xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 cursor-pointer"
               onClick={() => onNavigate('courses')}
@@ -311,7 +349,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </div>
             </div>
 
-            {/* Card 3 */}
             <div
               className="group bg-gradient-to-br from-white to-[#FEF3C7]/30 p-6 sm:p-8 rounded-3xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 cursor-pointer sm:col-span-2 lg:col-span-1"
               onClick={() => onNavigate('courses')}
@@ -341,9 +378,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════
-          REDES SOCIALES
-      ══════════════════════════════════════════════════ */}
+      {/* ══ REDES SOCIALES ══ */}
       <section className="py-12 sm:py-16 px-4 bg-[#F9FAFB]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8 sm:mb-10">
@@ -357,7 +392,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
-            {/* Instagram */}
             <a
               href="https://instagram.com/comeback.pasteleria"
               target="_blank"
@@ -373,7 +407,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <p className="text-xs sm:text-sm text-gray-600 truncate">@comeback.pasteleria</p>
             </a>
 
-            {/* Facebook */}
             <a
               href="https://facebook.com"
               target="_blank"
@@ -389,7 +422,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <p className="text-xs sm:text-sm text-gray-600 truncate">comeback pasteleria</p>
             </a>
 
-            {/* WhatsApp */}
             <a
               href="https://wa.me/584241055470"
               target="_blank"
@@ -405,7 +437,6 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <p className="text-xs sm:text-sm text-gray-600 truncate">+58 424 105 5470</p>
             </a>
 
-            {/* Email */}
             <a
               href="mailto:informacion.comeback@gmail.com"
               className="cursor-pointer bg-white rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
@@ -423,9 +454,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════
-          EXPERIENCIAS REALES EN CLASE - FILA 1 (ARREGLADA)
-      ══════════════════════════════════════════════════ */}
+      {/* ══ EXPERIENCIAS FILA 1 ══ */}
       <section className="py-12 sm:py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-8 sm:mb-10 gap-3 sm:gap-4">
@@ -439,14 +468,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
             <button
               onClick={() => onNavigate('courses')}
-              className="cursor-pointer text-[#FF6B6B] font-semibold hover:underline text-sm sm:text-base"
+              className="cursor-pointer text-[#FF6B6B] font-semibold hover:underline text-sm sm:text-base self-start lg:self-auto"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               Ver cursos →
             </button>
           </div>
           
-          {/* FILA 1 - Todas con altura uniforme */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {['foto1.jpg', 'foto2.jpg', 'foto3.jpg'].map((photo) => (
               <div 
@@ -465,9 +493,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════
-          EXPERIENCIAS REALES EN CLASE - FILA 2 (ARREGLADA)
-      ══════════════════════════════════════════════════ */}
+      {/* ══ EXPERIENCIAS FILA 2 ══ */}
       <section className="py-8 sm:py-12 px-4 bg-[#F9FAFB]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
@@ -488,17 +514,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* ══════════════════════════════════════════════════
-          TESTIMONIOS
-      ══════════════════════════════════════════════════ */}
+      {/* ══ TESTIMONIOS ══ */}
       <Testimonials />
 
-      {/* ══════════════════════════════════════════════════
-          CTA FINAL
-      ══════════════════════════════════════════════════ */}
+      {/* ══ CTA FINAL ══ */}
       <section 
         className="py-12 sm:py-16 lg:py-20 px-4 text-white relative overflow-hidden"
-        style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 50%, #FF6B6B 100%)' }}
+        style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 50%, #FF6B6B 100%)', backgroundColor: '#FF6B6B' }}
       >
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full blur-3xl"></div>
@@ -520,11 +542,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
           </p>
           <button
             onClick={() => onNavigate('courses')}
-            className="cursor-pointer group px-8 sm:px-10 py-4 sm:py-5 bg-white text-[#FF6B6B] font-bold rounded-full hover:shadow-2xl transition-all duration-300 text-base sm:text-lg inline-flex items-center gap-3 transform hover:scale-105"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
+            style={ctaWhiteButton}
           >
             <span>Explorar Todos los Cursos</span>
-            <svg className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg style={{ width: '24px', height: '24px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
             </svg>
           </button>
