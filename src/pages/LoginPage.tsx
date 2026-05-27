@@ -29,13 +29,13 @@ const SpinnerIcon = () => (
 
 type Mode = 'login' | 'register' | 'forgot';
 
-// ── Estilo inline de respaldo para botones (Safari iOS fix) ─────────
+// ── Estilo inline botón principal (Safari iOS fix) ──────────────────
 const buttonPrimaryStyle: React.CSSProperties = {
   backgroundColor: '#f43f5e',
   color: '#ffffff',
   fontWeight: 700,
   width: '100%',
-  padding: '12px 24px',
+  padding: '14px 24px',
   borderRadius: '12px',
   border: 'none',
   cursor: 'pointer',
@@ -48,6 +48,26 @@ const buttonPrimaryStyle: React.CSSProperties = {
   fontSize: '16px',
   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+};
+
+// ── Estilo botón secundario (mostrar/ocultar password) ──────────────
+const iconButtonStyle: React.CSSProperties = {
+  position: 'absolute',
+  right: '12px',
+  top: '50%',
+  transform: 'translateY(-50%)',
+  background: 'transparent',
+  border: 'none',
+  cursor: 'pointer',
+  color: '#9ca3af',
+  padding: '4px',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  WebkitAppearance: 'none',
+  appearance: 'none',
 };
 
 export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
@@ -199,7 +219,7 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
     }
   };
 
-  // ── RECUPERAR CONTRASEÑA ─────────────────────────────────────────
+  // ── RECUPERAR CONTRASEÑA (MEJORADO) ───────────────────────────────
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) {
@@ -211,9 +231,13 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
     setMessage(null);
 
     try {
+      // 🔑 Detecta automáticamente si estamos en local o producción
+      const redirectURL = window.location.origin;
+      console.log('🔄 Redirect URL para reset:', redirectURL);
+
       const { error } = await supabase.auth.resetPasswordForEmail(
         email.trim().toLowerCase(),
-        { redirectTo: 'https://mi-pagina-web-inky.vercel.app' }
+        { redirectTo: redirectURL }
       );
 
       if (error) {
@@ -225,7 +249,7 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
 
       setMessage({
         type: 'success',
-        text: '✅ Email enviado. Revisa tu bandeja de entrada y el spam.',
+        text: '✅ ¡Email enviado! Revisa tu bandeja de entrada Y la carpeta de spam. Haz clic en el enlace para cambiar tu contraseña.',
       });
     } catch (err: any) {
       console.error('❌ Error inesperado:', err);
@@ -241,7 +265,11 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
 
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
-          <button onClick={() => onNavigate('home')} className="inline-block cursor-pointer group">
+          <button
+            onClick={() => onNavigate('home')}
+            className="inline-block cursor-pointer group"
+            style={{ background: 'transparent', border: 'none', padding: 0 }}
+          >
             <div className="text-3xl sm:text-4xl mb-2">🎂</div>
             <h1 className="text-xl sm:text-2xl font-bold text-rose-600 group-hover:text-rose-700 transition-colors" style={{ fontFamily: "'Playfair Display', serif" }}>
               Chef Karolain Rondón
@@ -261,12 +289,28 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
               <button
                 onClick={() => switchMode('login')}
                 className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all cursor-pointer ${mode === 'login' ? 'bg-white text-rose-600 shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
+                style={{
+                  backgroundColor: mode === 'login' ? '#ffffff' : 'transparent',
+                  color: mode === 'login' ? '#e11d48' : '#6b7280',
+                  border: 'none',
+                  WebkitAppearance: 'none',
+                  appearance: 'none',
+                  minHeight: '40px',
+                }}
               >
                 Iniciar Sesión
               </button>
               <button
                 onClick={() => switchMode('register')}
                 className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-all cursor-pointer ${mode === 'register' ? 'bg-white text-rose-600 shadow-sm font-semibold' : 'text-gray-500 hover:text-gray-700'}`}
+                style={{
+                  backgroundColor: mode === 'register' ? '#ffffff' : 'transparent',
+                  color: mode === 'register' ? '#e11d48' : '#6b7280',
+                  border: 'none',
+                  WebkitAppearance: 'none',
+                  appearance: 'none',
+                  minHeight: '40px',
+                }}
               >
                 Registrarse
               </button>
@@ -324,7 +368,7 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+                    style={iconButtonStyle}
                     tabIndex={-1}
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -337,7 +381,14 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
                   type="button"
                   onClick={() => switchMode('forgot')}
                   className="text-sm text-rose-500 hover:text-rose-700 cursor-pointer transition-colors"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    padding: '4px 8px',
+                    fontFamily: "'Montserrat', sans-serif",
+                    color: '#f43f5e',
+                    fontWeight: 500,
+                  }}
                 >
                   ¿Olvidaste tu contraseña?
                 </button>
@@ -433,7 +484,7 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+                    style={iconButtonStyle}
                     tabIndex={-1}
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -512,7 +563,12 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
                 type="button"
                 onClick={() => switchMode('login')}
                 className="w-full text-sm text-gray-500 hover:text-rose-500 cursor-pointer transition-colors py-2"
-                style={{ fontFamily: "'Montserrat', sans-serif" }}
+                style={{
+                  background: 'transparent',
+                  border: 'none',
+                  fontFamily: "'Montserrat', sans-serif",
+                  minHeight: '44px',
+                }}
               >
                 ← Volver a Iniciar Sesión
               </button>

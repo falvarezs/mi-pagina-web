@@ -10,13 +10,14 @@ import { DashboardPage } from './pages/DashboardPage';
 import { AboutPage, FAQPage, ContactPage } from './pages/InfoPages';
 import { AdminPage } from './pages/AdminPage';
 import { WatchCoursePage } from './pages/WatchCoursePage';
+import { ResetPasswordPage } from './pages/ResetPasswordPage';
 import { supabase } from './lib/supabaseClient';
 
 type Page =
   | 'home' | 'courses' | 'course' | 'checkout'
   | 'login' | 'dashboard' | 'about' | 'faq'
   | 'contact' | 'terms' | 'privacy' | 'cookies'
-  | 'watch-course' | 'admin';
+  | 'watch-course' | 'admin' | 'reset-password';
 
 interface PageData {
   slug?: string;
@@ -31,8 +32,20 @@ export function App() {
   const [isLoggedIn, setIsLoggedIn]   = useState(false);
   const [userEmail, setUserEmail]     = useState('');
   const [authLoading, setAuthLoading] = useState(true);
+  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
 
   const isAdmin = userEmail === ADMIN_EMAIL;
+
+  // ── Detectar si la URL viene de un email de recuperación ──────────
+  useEffect(() => {
+    const hash = window.location.hash;
+
+    if (hash && hash.includes('type=recovery')) {
+      console.log('🔑 Detectado enlace de recuperación de contraseña');
+      setIsPasswordRecovery(true);
+      setCurrentPage('reset-password');
+    }
+  }, []);
 
   useEffect(() => {
     // ── 1. Cargar sesión existente PRIMERO ──────────────────────────
@@ -46,7 +59,6 @@ export function App() {
       } catch (err) {
         console.error('Error cargando sesión:', err);
       } finally {
-        // SIEMPRE quitar el loading, pase lo que pase
         setAuthLoading(false);
       }
     };
@@ -58,7 +70,22 @@ export function App() {
       async (event, session) => {
         console.log('Auth event:', event);
 
+        // 🔑 Detectar evento de recuperación de contraseña
+        if (event === 'PASSWORD_RECOVERY') {
+          console.log('🔑 Evento PASSWORD_RECOVERY detectado');
+          setIsPasswordRecovery(true);
+          setCurrentPage('reset-password');
+          setAuthLoading(false);
+          return;
+        }
+
         if (event === 'SIGNED_IN' && session?.user) {
+          // Si estamos en flujo de recuperación, NO hacer nada (que termine el reset)
+          if (isPasswordRecovery) {
+            console.log('⏭️ Ignorando SIGNED_IN durante recuperación');
+            return;
+          }
+
           setIsLoggedIn(true);
           setUserEmail(session.user.email ?? '');
 
@@ -89,6 +116,7 @@ export function App() {
         } else if (event === 'SIGNED_OUT') {
           setIsLoggedIn(false);
           setUserEmail('');
+          setIsPasswordRecovery(false);
 
         } else if (event === 'TOKEN_REFRESHED' && session?.user) {
           setIsLoggedIn(true);
@@ -100,10 +128,16 @@ export function App() {
     return () => {
       subscription.unsubscribe();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // ── Navegación ────────────────────────────────────────────────────
   const navigate = (page: string, data?: any) => {
+    // Si salimos de reset-password, limpiar el estado
+    if (currentPage === 'reset-password' && page !== 'reset-password') {
+      setIsPasswordRecovery(false);
+    }
+
     setCurrentPage(page as Page);
     if (data) setPageData(data);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -139,6 +173,15 @@ export function App() {
             Cargando Academia...
           </p>
         </div>
+      </div>
+    );
+  }
+
+  // ── Si estamos en flujo de recuperación → mostrar SOLO esa página ─
+  if (currentPage === 'reset-password' || isPasswordRecovery) {
+    return (
+      <div className="min-h-screen w-full overflow-x-hidden">
+        <ResetPasswordPage onNavigate={navigate} />
       </div>
     );
   }
