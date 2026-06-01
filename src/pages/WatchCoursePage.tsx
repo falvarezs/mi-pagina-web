@@ -7,7 +7,10 @@ interface WatchCoursePageProps {
   onNavigate: (page: string, data?: any) => void;
 }
 
-// ── Estilos inline de respaldo (Safari iOS fix) ──────────────
+// ═══════════════════════════════════════════════════════════════════
+// ESTILOS INLINE PARA TODOS LOS BOTONES (Safari iOS fix)
+// ═══════════════════════════════════════════════════════════════════
+
 const markCompletedButton: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
@@ -21,8 +24,12 @@ const markCompletedButton: React.CSSProperties = {
   border: 'none',
   cursor: 'pointer',
   fontSize: '14px',
-  minHeight: '44px',
+  minHeight: '48px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+  width: '100%',
 };
 
 const markCompletedDoneButton: React.CSSProperties = {
@@ -38,7 +45,11 @@ const markCompletedDoneButton: React.CSSProperties = {
   border: '1px solid rgba(34, 197, 94, 0.3)',
   cursor: 'not-allowed',
   fontSize: '14px',
-  minHeight: '44px',
+  minHeight: '48px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+  width: '100%',
 };
 
 const navButtonActive: React.CSSProperties = {
@@ -54,8 +65,12 @@ const navButtonActive: React.CSSProperties = {
   border: 'none',
   cursor: 'pointer',
   fontSize: '14px',
-  minHeight: '44px',
+  minHeight: '48px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+  width: '100%',
 };
 
 const navButtonDisabled: React.CSSProperties = {
@@ -64,14 +79,19 @@ const navButtonDisabled: React.CSSProperties = {
   justifyContent: 'center',
   gap: '8px',
   padding: '12px 16px',
-  backgroundColor: '#374151',
+  backgroundColor: '#1f2937',
   color: '#6b7280',
   fontWeight: 600,
   borderRadius: '12px',
   border: 'none',
   cursor: 'not-allowed',
   fontSize: '14px',
-  minHeight: '44px',
+  minHeight: '48px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+  width: '100%',
+  opacity: 0.5,
 };
 
 const nextButtonStyle: React.CSSProperties = {
@@ -88,8 +108,12 @@ const nextButtonStyle: React.CSSProperties = {
   border: 'none',
   cursor: 'pointer',
   fontSize: '14px',
-  minHeight: '44px',
+  minHeight: '48px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+  width: '100%',
 };
 
 const backButtonStyle: React.CSSProperties = {
@@ -106,15 +130,18 @@ const backButtonStyle: React.CSSProperties = {
   border: 'none',
   cursor: 'pointer',
   fontSize: '14px',
-  minHeight: '44px',
+  minHeight: '48px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
 };
 
 const courseNotFoundButton: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '12px 24px',
+  padding: '14px 28px',
   backgroundColor: '#FF6B6B',
   color: '#ffffff',
   fontWeight: 600,
@@ -124,7 +151,34 @@ const courseNotFoundButton: React.CSSProperties = {
   fontSize: '15px',
   minHeight: '48px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
 };
+
+// Botón de cada lección en el sidebar
+const lessonButtonStyle = (isActive: boolean): React.CSSProperties => ({
+  display: 'flex',
+  alignItems: 'center',
+  width: '100%',
+  textAlign: 'left',
+  padding: '12px',
+  borderRadius: '12px',
+  gap: '12px',
+  border: isActive ? '1px solid rgba(255, 107, 107, 0.3)' : '1px solid transparent',
+  cursor: 'pointer',
+  background: isActive 
+    ? 'linear-gradient(to right, rgba(255, 107, 107, 0.2), rgba(245, 158, 11, 0.2))'
+    : 'transparent',
+  backgroundColor: isActive ? 'rgba(255, 107, 107, 0.15)' : 'transparent',
+  transition: 'all 0.2s',
+  minHeight: '56px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+});
+
+// ═══════════════════════════════════════════════════════════════════
 
 export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) {
   const [courseAllowed, setCourseAllowed] = useState(false);
@@ -220,7 +274,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Curso no encontrado
+  // ── Curso no encontrado ────────────────────────────────────────
   if (!course) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
@@ -250,15 +304,15 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
 
   if (!courseAllowed) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
-        <div className="bg-gray-800 rounded-2xl p-6 sm:p-8 text-center max-w-lg">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 py-8">
+        <div className="bg-gray-800 rounded-2xl p-6 sm:p-8 text-center max-w-lg w-full">
           <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-4">Acceso restringido</h2>
-          <p className="text-gray-300 mb-6">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">Acceso restringido</h2>
+          <p className="text-gray-300 mb-6 text-sm sm:text-base">
             Este curso todavía no está activo para tu cuenta. Si ya enviaste el comprobante, espera a que aprobemos tu pago.
           </p>
           <button
@@ -279,7 +333,9 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
   return (
     <div className="min-h-screen bg-gray-900 w-full overflow-x-hidden">
 
-      {/* Video Player */}
+      {/* ═══════════════════════════════════════════════════════════════
+          VIDEO PLAYER
+      ═══════════════════════════════════════════════════════════════ */}
       <div className="w-full bg-black">
         <div className="max-w-6xl mx-auto">
           <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
@@ -301,20 +357,22 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
       <div className="max-w-6xl mx-auto px-4 py-6">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* Columna principal */}
+          {/* ═══════════════════════════════════════════════════════════════
+              COLUMNA PRINCIPAL
+          ═══════════════════════════════════════════════════════════════ */}
           <div className="lg:col-span-2 space-y-4">
 
             {/* Info de la lección */}
             <div className="bg-gray-800 rounded-2xl p-5 sm:p-6">
-              <p className="text-[#FF6B6B] text-sm uppercase tracking-wider mb-2 font-semibold">
+              <p className="text-[#FF6B6B] text-xs sm:text-sm uppercase tracking-wider mb-2 font-semibold break-words">
                 {course.title}
               </p>
-              <h1 className="text-white text-xl sm:text-2xl font-bold mb-3">
+              <h1 className="text-white text-lg sm:text-2xl font-bold mb-3 break-words" style={{ fontFamily: "'Playfair Display', serif" }}>
                 {currentLesson?.title || 'Introducción'}
               </h1>
-              <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-gray-400 text-xs sm:text-sm">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-gray-400 text-xs sm:text-sm">
                 <span className="flex items-center gap-1">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   {currentLesson?.duration || ''}
@@ -322,7 +380,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                 <span>Lección {activeLesson + 1} de {allLessons.length}</span>
                 {isLessonCompleted && (
                   <span className="flex items-center gap-1 text-green-400">
-                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                       <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
                     </svg>
                     Completada
@@ -343,10 +401,10 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                 disabled={isLessonCompleted}
                 style={isLessonCompleted ? markCompletedDoneButton : markCompletedButton}
               >
-                <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
-                {isLessonCompleted ? 'Ya vista ✓' : 'Marcar como vista'}
+                <span>{isLessonCompleted ? 'Ya vista ✓' : 'Marcar como vista'}</span>
               </button>
 
               {/* Anterior */}
@@ -355,7 +413,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                 disabled={isPrevDisabled}
                 style={isPrevDisabled ? navButtonDisabled : navButtonActive}
               >
-                ← Anterior
+                <span>← Anterior</span>
               </button>
 
               {/* Siguiente */}
@@ -364,7 +422,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                 disabled={isNextDisabled}
                 style={isNextDisabled ? navButtonDisabled : nextButtonStyle}
               >
-                Siguiente →
+                <span>Siguiente →</span>
               </button>
             </div>
 
@@ -390,7 +448,7 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
 
               {progressPercent === 100 && (
                 <div className="mt-3 bg-green-500/20 border border-green-500/30 rounded-xl p-3 text-center">
-                  <p className="text-green-400 font-bold">
+                  <p className="text-green-400 font-bold text-sm sm:text-base">
                     🎉 ¡Felicitaciones! Completaste el curso
                   </p>
                 </div>
@@ -399,18 +457,24 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
 
             {/* Descripción del curso */}
             <div className="bg-gray-800 rounded-2xl p-5 sm:p-6">
-              <h3 className="text-white font-bold text-lg mb-3">Sobre este curso</h3>
+              <h3 className="text-white font-bold text-base sm:text-lg mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
+                Sobre este curso
+              </h3>
               <p className="text-gray-300 text-sm leading-relaxed">
                 {course.fullDescription}
               </p>
             </div>
           </div>
 
-          {/* Lista de lecciones */}
+          {/* ═══════════════════════════════════════════════════════════════
+              LISTA DE LECCIONES (SIDEBAR)
+          ═══════════════════════════════════════════════════════════════ */}
           <div className="lg:col-span-1">
             <div className="bg-gray-800 rounded-2xl p-4 lg:sticky lg:top-24">
               <div className="flex items-center justify-between mb-4 px-2">
-                <h3 className="text-white font-bold text-lg">Contenido</h3>
+                <h3 className="text-white font-bold text-base sm:text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  Contenido
+                </h3>
                 <span className="text-xs text-gray-400 bg-gray-700 px-2 py-1 rounded-full">
                   {completedLessons.size}/{allLessons.length}
                 </span>
@@ -428,14 +492,14 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                 />
               </div>
 
-              <div className="space-y-2 max-h-[55vh] overflow-y-auto pr-1">
+              <div className="space-y-2 max-h-[60vh] lg:max-h-[55vh] overflow-y-auto pr-1">
                 {course.modules.map((module, moduleIndex) => (
                   <div key={module.id}>
                     <div className="px-3 py-2">
                       <p className="text-[#F59E0B] text-xs uppercase tracking-wider font-bold">
                         Módulo {moduleIndex + 1}
                       </p>
-                      <p className="text-gray-300 text-sm font-medium">
+                      <p className="text-gray-300 text-sm font-medium break-words">
                         {module.title}
                       </p>
                     </div>
@@ -449,37 +513,43 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                         <button
                           key={lesson.id}
                           onClick={() => changeLesson(globalIndex)}
-                          className={`cursor-pointer w-full text-left px-3 py-3 rounded-xl flex items-center gap-3 transition-all ${
-                            isActive
-                              ? 'bg-gradient-to-r from-[#FF6B6B]/20 to-[#F59E0B]/20 border border-[#FF6B6B]/30'
-                              : 'hover:bg-gray-700'
-                          }`}
+                          style={lessonButtonStyle(isActive)}
                         >
-                          <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-all ${
-                            isCompleted
-                              ? 'bg-green-500 text-white'
-                              : isActive
-                              ? 'bg-[#FF6B6B] text-white'
-                              : 'bg-gray-700 text-gray-400'
-                          }`}>
+                          <div 
+                            className="flex items-center justify-center flex-shrink-0 rounded-full transition-all"
+                            style={{
+                              width: '32px',
+                              height: '32px',
+                              backgroundColor: isCompleted 
+                                ? '#16a34a' 
+                                : isActive 
+                                  ? '#FF6B6B' 
+                                  : '#374151',
+                              color: '#ffffff',
+                            }}
+                          >
                             {isCompleted ? (
-                              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                              <svg style={{ width: '16px', height: '16px' }} fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                               </svg>
                             ) : (
-                              <svg className="w-3 h-3 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                              <svg style={{ width: '12px', height: '12px', marginLeft: '2px' }} fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M8 5v14l11-7z"/>
                               </svg>
                             )}
                           </div>
 
                           <div className="flex-1 min-w-0">
-                            <p className={`text-sm truncate ${
-                              isActive ? 'text-white font-semibold' : 'text-gray-300'
-                            }`}>
+                            <p 
+                              className="text-sm truncate"
+                              style={{
+                                color: isActive ? '#ffffff' : '#d1d5db',
+                                fontWeight: isActive ? 600 : 400,
+                              }}
+                            >
                               {lesson.title}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs" style={{ color: '#6b7280' }}>
                               {lesson.duration}
                             </p>
                           </div>
@@ -496,10 +566,10 @@ export function WatchCoursePage({ courseId, onNavigate }: WatchCoursePageProps) 
                   onClick={() => onNavigate('dashboard')}
                   style={backButtonStyle}
                 >
-                  <svg style={{ width: '16px', height: '16px' }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg style={{ width: '16px', height: '16px', flexShrink: 0 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                   </svg>
-                  Volver a Mis Cursos
+                  <span>Volver a Mis Cursos</span>
                 </button>
               </div>
             </div>

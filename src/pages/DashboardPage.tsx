@@ -22,7 +22,10 @@ interface CourseProgress {
   percent: number;
 }
 
-// ── Estilos inline de respaldo (Safari iOS fix) ──────────────
+// ═══════════════════════════════════════════════════════════════════
+// ESTILOS INLINE PARA TODOS LOS BOTONES (Safari iOS fix)
+// ═══════════════════════════════════════════════════════════════════
+
 const logoutButtonStyle: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
@@ -36,7 +39,10 @@ const logoutButtonStyle: React.CSSProperties = {
   cursor: 'pointer',
   fontSize: '14px',
   transition: 'all 0.2s',
-  minHeight: '40px',
+  minHeight: '44px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
 };
 
 const exploreButtonStyle: React.CSSProperties = {
@@ -54,6 +60,9 @@ const exploreButtonStyle: React.CSSProperties = {
   fontSize: '15px',
   minHeight: '48px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
 };
 
 const watchCourseButtonStyle: React.CSSProperties = {
@@ -74,13 +83,35 @@ const watchCourseButtonStyle: React.CSSProperties = {
   width: '100%',
   marginTop: '16px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
 };
 
-const rejectActionButton: React.CSSProperties = {
+const primaryActionButton: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
   justifyContent: 'center',
-  padding: '8px 16px',
+  padding: '10px 16px',
+  backgroundColor: '#FF6B6B',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '8px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '13px',
+  minHeight: '40px',
+  transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+};
+
+const dangerButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '10px 16px',
   backgroundColor: '#dc2626',
   color: '#ffffff',
   fontWeight: 600,
@@ -88,9 +119,52 @@ const rejectActionButton: React.CSSProperties = {
   border: 'none',
   cursor: 'pointer',
   fontSize: '13px',
-  minHeight: '36px',
+  minHeight: '40px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
 };
+
+const outlineDangerButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '10px 16px',
+  backgroundColor: '#ffffff',
+  color: '#dc2626',
+  fontWeight: 600,
+  borderRadius: '8px',
+  border: '1px solid #dc2626',
+  cursor: 'pointer',
+  fontSize: '13px',
+  minHeight: '40px',
+  transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+};
+
+const outlineButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '10px 16px',
+  backgroundColor: '#ffffff',
+  color: '#374151',
+  fontWeight: 600,
+  borderRadius: '8px',
+  border: '1px solid #d1d5db',
+  cursor: 'pointer',
+  fontSize: '13px',
+  minHeight: '40px',
+  transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+};
+
+// ═══════════════════════════════════════════════════════════════════
 
 export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPageProps) {
   const [purchases, setPurchases] = useState<Purchase[]>([]);
@@ -98,6 +172,8 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
   const [refreshing, setRefreshing] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [progressMap, setProgressMap] = useState<Record<number, CourseProgress>>({});
+  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [imgErrors, setImgErrors] = useState<Record<number, boolean>>({});
 
   useEffect(() => {
     const initialize = async () => {
@@ -117,6 +193,7 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
       window.clearInterval(interval);
       window.removeEventListener('focus', onFocus);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -137,6 +214,7 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
     return () => {
       supabase.removeChannel(channel);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
   const loadPurchases = async () => {
@@ -200,6 +278,34 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
     }
   };
 
+  // ── Eliminar compra rechazada (para reintentar) ───────────────
+  const handleDeleteRejected = async (purchaseId: number, courseTitle: string) => {
+    const confirmar = window.confirm(
+      `¿Eliminar el registro rechazado de "${courseTitle}"?\n\nEsto te permitirá enviar un nuevo intento de compra.`
+    );
+
+    if (!confirmar) return;
+
+    setDeletingId(purchaseId);
+    try {
+      const { error } = await supabase
+        .from('purchases')
+        .delete()
+        .eq('id', purchaseId);
+
+      if (error) {
+        alert('No se pudo eliminar: ' + error.message);
+      } else {
+        await loadPurchases();
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error al eliminar el registro');
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   const approvedCourseIds = new Set(
     purchases.filter(p => p.status === 'approved').map(p => p.course_id)
   );
@@ -208,7 +314,7 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
     .filter(p => p.status === 'approved')
     .map(p => {
       const course = courses.find(c => c.id === p.course_id);
-      return course ? { ...course, purchaseDate: p.created_at } : null;
+      return course ? { ...course, purchaseDate: p.created_at, purchaseId: p.id } : null;
     })
     .filter(Boolean);
 
@@ -216,7 +322,7 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
     .filter(p => p.status === 'pending' && !approvedCourseIds.has(p.course_id))
     .map(p => {
       const course = courses.find(c => c.id === p.course_id);
-      return course ? { ...course, purchaseDate: p.created_at } : null;
+      return course ? { ...course, purchaseDate: p.created_at, purchaseId: p.id } : null;
     })
     .filter(Boolean);
 
@@ -224,14 +330,16 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
     .filter(p => p.status === 'rejected')
     .map(p => {
       const course = courses.find(c => c.id === p.course_id);
-      return course ? { ...course, purchaseDate: p.created_at } : null;
+      return course ? { ...course, purchaseDate: p.created_at, purchaseId: p.id } : null;
     })
     .filter(Boolean);
 
   return (
     <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
 
-      {/* Header con fallback de color */}
+      {/* ═══════════════════════════════════════════════════════════════
+          HEADER
+      ═══════════════════════════════════════════════════════════════ */}
       <div 
         className="text-white py-8 sm:py-12 px-4"
         style={{ 
@@ -242,10 +350,12 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
         <div className="max-w-5xl mx-auto">
           <div className="flex justify-between items-start flex-wrap gap-4">
             <div className="min-w-0 flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold mb-2">
+              <h1 className="text-2xl sm:text-3xl font-bold mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
                 Mi Panel de Aprendizaje
               </h1>
-              <p className="opacity-90 text-sm break-words">{userEmail}</p>
+              <p className="opacity-90 text-sm break-all sm:break-words" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                {userEmail}
+              </p>
             </div>
             <div className="flex items-center gap-3 flex-shrink-0">
               {refreshing && (
@@ -271,7 +381,9 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
           </div>
         ) : (
           <>
-            {/* Sin cursos */}
+            {/* ═══════════════════════════════════════════════════════════════
+                SIN CURSOS
+            ═══════════════════════════════════════════════════════════════ */}
             {approvedCourses.length === 0 && pendingCourses.length === 0 && rejectedCourses.length === 0 && (
               <div className="bg-white rounded-2xl shadow-md p-6 sm:p-10 text-center">
                 <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -294,10 +406,12 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
               </div>
             )}
 
-            {/* Cursos aprobados */}
+            {/* ═══════════════════════════════════════════════════════════════
+                CURSOS APROBADOS
+            ═══════════════════════════════════════════════════════════════ */}
             {approvedCourses.length > 0 && (
               <div className="mb-10">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
                   ✅ Mis Cursos
                 </h2>
                 <div className="grid gap-6">
@@ -306,17 +420,28 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
                     const percent = progress?.percent ?? 0;
                     const completed = progress?.completed ?? 0;
                     const total = progress?.total ?? 0;
+                    const hasImgError = imgErrors[course.id];
 
                     return (
                       <div key={course.id} className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all">
                         <div className="flex flex-col sm:flex-row">
 
-                          <div className="relative w-full sm:w-52 h-44 sm:h-auto flex-shrink-0">
-                            <img
-                              src={course.thumbnail}
-                              alt={course.title}
-                              className="w-full h-full object-cover"
-                            />
+                          <div className="relative w-full sm:w-52 h-44 sm:h-auto flex-shrink-0 bg-gray-100">
+                            {!hasImgError ? (
+                              <img
+                                src={course.thumbnail}
+                                alt={course.title}
+                                className="w-full h-full object-cover"
+                                onError={() => setImgErrors(prev => ({ ...prev, [course.id]: true }))}
+                              />
+                            ) : (
+                              <div 
+                                className="w-full h-full flex items-center justify-center text-5xl"
+                                style={{ background: 'linear-gradient(135deg, #FF6B6B, #F59E0B)', backgroundColor: '#FF6B6B' }}
+                              >
+                                🍰
+                              </div>
+                            )}
                             {percent === 100 && (
                               <div className="absolute inset-0 bg-green-500/80 flex items-center justify-center">
                                 <div className="text-center text-white">
@@ -387,25 +512,37 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
               </div>
             )}
 
-            {/* Cursos pendientes */}
+            {/* ═══════════════════════════════════════════════════════════════
+                CURSOS PENDIENTES
+            ═══════════════════════════════════════════════════════════════ */}
             {pendingCourses.length > 0 && (
               <div className="mb-10">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
                   ⏳ Pagos en Revisión
                 </h2>
                 <div className="space-y-3">
                   {pendingCourses.map((course: any) => (
-                    <div key={course.id} className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5 flex items-center gap-4">
-                      <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                    <div key={course.id} className="bg-amber-50 border border-amber-200 rounded-2xl p-4 sm:p-5">
+                      <div className="flex items-start gap-3 sm:gap-4 mb-3">
+                        <div className="w-10 h-10 bg-amber-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-gray-900 text-sm sm:text-base">{course.title}</h3>
+                          <p className="text-amber-700 text-xs sm:text-sm">
+                            Tu pago está siendo verificado (24-48 horas hábiles)
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-gray-900 text-sm sm:text-base">{course.title}</h3>
-                        <p className="text-amber-700 text-xs sm:text-sm">
-                          Tu pago está siendo verificado (24-48 horas hábiles)
-                        </p>
+                      <div className="flex gap-2 flex-wrap">
+                        <button
+                          onClick={() => onNavigate('course', { slug: course.slug })}
+                          style={outlineButton}
+                        >
+                          Ver detalle del curso
+                        </button>
                       </div>
                     </div>
                   ))}
@@ -413,30 +550,47 @@ export function DashboardPage({ userEmail, onNavigate, onLogout }: DashboardPage
               </div>
             )}
 
-            {/* Cursos rechazados */}
+            {/* ═══════════════════════════════════════════════════════════════
+                CURSOS RECHAZADOS (con botón eliminar)
+            ═══════════════════════════════════════════════════════════════ */}
             {rejectedCourses.length > 0 && (
               <div className="mb-10">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
+                <h2 className="text-xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
                   ❌ Pagos Rechazados
                 </h2>
                 <div className="space-y-3">
                   {rejectedCourses.map((course: any) => (
-                    <div key={course.id} className="bg-red-50 border border-red-200 rounded-2xl p-4 sm:p-5 flex items-center gap-4">
-                      <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
-                        <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                    <div key={course.id} className="bg-red-50 border border-red-200 rounded-2xl p-4 sm:p-5">
+                      <div className="flex items-start gap-3 sm:gap-4 mb-3">
+                        <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center flex-shrink-0">
+                          <svg className="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-gray-900 text-sm sm:text-base">{course.title}</h3>
+                          <p className="text-red-700 text-xs sm:text-sm">
+                            Tu intento de compra fue rechazado.
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-gray-900 text-sm sm:text-base">{course.title}</h3>
-                        <p className="text-red-700 text-xs sm:text-sm mb-3">
-                          Tu comprobante fue rechazado. Por favor envía uno nuevo.
-                        </p>
+                      <div className="flex gap-2 flex-wrap">
                         <button
                           onClick={() => onNavigate('checkout', { courseId: String(course.id) })}
-                          style={rejectActionButton}
+                          style={primaryActionButton}
                         >
-                          Enviar nuevo comprobante
+                          🔄 Reintentar compra
+                        </button>
+                        <button
+                          onClick={() => handleDeleteRejected(course.purchaseId, course.title)}
+                          disabled={deletingId === course.purchaseId}
+                          style={{
+                            ...outlineDangerButton,
+                            opacity: deletingId === course.purchaseId ? 0.5 : 1,
+                            cursor: deletingId === course.purchaseId ? 'not-allowed' : 'pointer',
+                          }}
+                        >
+                          {deletingId === course.purchaseId ? '⏳ Eliminando...' : '🗑️ Eliminar registro'}
                         </button>
                       </div>
                     </div>

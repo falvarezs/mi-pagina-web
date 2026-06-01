@@ -52,6 +52,221 @@ interface NavbarProps {
   onLogout: () => void;
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// ESTILOS INLINE PARA TODOS LOS BOTONES (Safari iOS fix)
+// ═══════════════════════════════════════════════════════════════════
+
+const logoButtonStyle: React.CSSProperties = {
+  background: 'transparent',
+  border: 'none',
+  padding: 0,
+  cursor: 'pointer',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+};
+
+const primaryGradientButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '6px',
+  padding: '10px 20px',
+  background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
+  backgroundColor: '#FF6B6B',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '9999px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '14px',
+  fontFamily: "'Montserrat', sans-serif",
+  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.2s',
+  whiteSpace: 'nowrap',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+  minHeight: '40px',
+};
+
+const primaryGradientButtonMobile: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '6px',
+  padding: '10px 14px',
+  background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
+  backgroundColor: '#FF6B6B',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '9999px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '13px',
+  fontFamily: "'Montserrat', sans-serif",
+  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.2s',
+  whiteSpace: 'nowrap',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+  minHeight: '44px',
+};
+
+const secondaryGradientButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '6px',
+  padding: '10px 20px',
+  background: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)',
+  backgroundColor: '#14B8A6',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '9999px',
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '14px',
+  fontFamily: "'Montserrat', sans-serif",
+  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.2s',
+  whiteSpace: 'nowrap',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+  minHeight: '40px',
+};
+
+const outlineButton: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '10px 18px',
+  backgroundColor: '#ffffff',
+  color: '#374151',
+  fontWeight: 600,
+  borderRadius: '9999px',
+  border: '1px solid #e5e7eb',
+  cursor: 'pointer',
+  fontSize: '13px',
+  fontFamily: "'Montserrat', sans-serif",
+  transition: 'all 0.2s',
+  whiteSpace: 'nowrap',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+  minHeight: '40px',
+};
+
+const iconCircleGray: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '44px',
+  height: '44px',
+  borderRadius: '9999px',
+  backgroundColor: '#f3f4f6',
+  color: '#374151',
+  border: 'none',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  flexShrink: 0,
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+};
+
+const iconCirclePrimary: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  width: '44px',
+  height: '44px',
+  borderRadius: '9999px',
+  background: 'linear-gradient(135deg, #14B8A6 0%, #0D9488 100%)',
+  backgroundColor: '#14B8A6',
+  color: '#ffffff',
+  border: 'none',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+  flexShrink: 0,
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+};
+
+const desktopNavButton = (active: boolean): React.CSSProperties => ({
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: '8px 12px',
+  borderRadius: '12px',
+  minWidth: '60px',
+  minHeight: '44px',
+  background: active 
+    ? 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)' 
+    : 'transparent',
+  backgroundColor: active ? '#FF6B6B' : 'transparent',
+  color: active ? '#ffffff' : '#4b5563',
+  border: 'none',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  boxShadow: active ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+  fontFamily: "'Montserrat', sans-serif",
+});
+
+const mobileNavButton = (active: boolean): React.CSSProperties => ({
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  width: '100%',
+  padding: '12px 16px',
+  borderRadius: '12px',
+  background: active 
+    ? 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)' 
+    : 'transparent',
+  backgroundColor: active ? '#FF6B6B' : 'transparent',
+  color: active ? '#ffffff' : '#374151',
+  border: 'none',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  boxShadow: active ? '0 4px 6px -1px rgba(0, 0, 0, 0.1)' : 'none',
+  textAlign: 'left',
+  minHeight: '48px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+  fontFamily: "'Montserrat', sans-serif",
+});
+
+const mobileLogoutButton: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px',
+  width: '100%',
+  padding: '12px 16px',
+  borderRadius: '12px',
+  backgroundColor: 'transparent',
+  color: '#dc2626',
+  border: 'none',
+  cursor: 'pointer',
+  transition: 'all 0.2s',
+  textAlign: 'left',
+  minHeight: '48px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  WebkitTapHighlightColor: 'transparent',
+  fontFamily: "'Montserrat', sans-serif",
+};
+
+// ═══════════════════════════════════════════════════════════════════
+
 export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout }: NavbarProps) {
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -100,19 +315,16 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
     <>
       {/* ══════════════════════════════════════════════════
           NAVBAR PRINCIPAL
-          Móvil/Tablet (< 1280px): Logo + Ingresar + Hamburguesa
-          Desktop (≥ 1280px): Todo visible
       ══════════════════════════════════════════════════ */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md shadow-sm border-b border-gray-100 w-full">
         <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16 sm:h-20 gap-2">
 
-            {/* ══════════════════════════════════════════
-                LOGO - Siempre visible, adaptable
-            ══════════════════════════════════════════ */}
+            {/* ══ LOGO ══ */}
             <button
               onClick={() => handleNavigate('home')}
-              className="flex items-center gap-2 sm:gap-3 group cursor-pointer flex-shrink-0 min-w-0"
+              style={logoButtonStyle}
+              className="flex items-center gap-2 sm:gap-3 group flex-shrink-0 min-w-0"
               aria-label="Ir al inicio"
             >
               {/* Círculo con KR */}
@@ -153,25 +365,30 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
 
             {/* ══════════════════════════════════════════
                 NAVEGACIÓN DESKTOP (xl+ : ≥1280px)
-                Todos los íconos con texto
             ══════════════════════════════════════════ */}
             <div className="hidden xl:flex items-center gap-1">
               {navItems.map(({ id, label, Icon }) => (
                 <button
                   key={id}
                   onClick={() => handleNavigate(id)}
-                  className={`cursor-pointer flex flex-col items-center justify-center px-3 py-2 rounded-xl transition-all min-w-[60px] ${
-                    currentPage === id
-                      ? 'bg-gradient-primary text-white shadow-md'
-                      : 'text-gray-600 hover:bg-gray-50'
-                  }`}
+                  style={desktopNavButton(currentPage === id)}
                   title={label}
                   aria-label={label}
                   aria-current={currentPage === id ? 'page' : undefined}
+                  onMouseEnter={(e) => {
+                    if (currentPage !== id) {
+                      e.currentTarget.style.backgroundColor = '#f9fafb';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (currentPage !== id) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
                 >
                   <Icon className="w-5 h-5" />
                   <span 
-                    className="text-[10px] mt-0.5 font-medium" 
+                    className="text-[10px] mt-0.5 font-medium"
                     style={{ fontFamily: "'Montserrat', sans-serif" }}
                   >
                     {label}
@@ -185,16 +402,16 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
                   <>
                     <button
                       onClick={() => handleNavigate('dashboard')}
-                      className="cursor-pointer flex items-center gap-2 bg-gradient-secondary text-white px-4 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm whitespace-nowrap"
-                      style={{ fontFamily: "'Montserrat', sans-serif" }}
+                      style={secondaryGradientButton}
                     >
                       <UserIcon className="w-4 h-4" />
                       <span>Mi Panel</span>
                     </button>
                     <button
                       onClick={onLogout}
-                      className="cursor-pointer inline-flex items-center px-4 py-2.5 rounded-full border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap"
-                      style={{ fontFamily: "'Montserrat', sans-serif" }}
+                      style={outlineButton}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
                     >
                       Salir
                     </button>
@@ -202,8 +419,7 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
                 ) : (
                   <button
                     onClick={() => handleNavigate('login')}
-                    className="cursor-pointer flex items-center gap-2 bg-gradient-primary text-white px-5 py-2.5 rounded-full hover:shadow-lg transition-all transform hover:scale-105 font-semibold text-sm whitespace-nowrap"
-                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    style={primaryGradientButton}
                   >
                     <UserIcon className="w-4 h-4" />
                     <span>Ingresar</span>
@@ -215,8 +431,9 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               {isAdmin && (
                 <button
                   onClick={() => handleNavigate('admin')}
-                  className="cursor-pointer ml-2 flex items-center px-3 py-2.5 rounded-full border border-gray-200 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  style={{ ...outlineButton, marginLeft: '8px', fontSize: '12px' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f9fafb'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
                 >
                   🔐 Admin
                 </button>
@@ -225,7 +442,6 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
 
             {/* ══════════════════════════════════════════
                 NAVEGACIÓN MÓVIL/TABLET (< 1280px)
-                Solo Ingresar + Hamburguesa
             ══════════════════════════════════════════ */}
             <div className="flex xl:hidden items-center gap-2 flex-shrink-0">
 
@@ -233,7 +449,7 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               {isLoggedIn ? (
                 <button
                   onClick={() => handleNavigate('dashboard')}
-                  className="cursor-pointer flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 bg-gradient-secondary text-white rounded-full shadow-md hover:shadow-lg transition-all"
+                  style={iconCirclePrimary}
                   aria-label="Mi Panel"
                   title="Mi Panel"
                 >
@@ -242,8 +458,7 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               ) : (
                 <button
                   onClick={() => handleNavigate('login')}
-                  className="cursor-pointer flex items-center gap-1 sm:gap-1.5 bg-gradient-primary text-white px-2.5 sm:px-3 md:px-4 py-2 sm:py-2.5 rounded-full shadow-md hover:shadow-lg transition-all font-semibold text-xs sm:text-sm whitespace-nowrap"
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  style={primaryGradientButtonMobile}
                   aria-label="Iniciar sesión"
                 >
                   <UserIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
@@ -254,10 +469,12 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
               {/* Botón hamburguesa */}
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="cursor-pointer flex items-center justify-center w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-gray-100 text-gray-700 hover:bg-gray-200 transition-all flex-shrink-0"
+                style={iconCircleGray}
                 aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
                 aria-expanded={menuOpen}
                 aria-controls="mobile-menu"
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e5e7eb'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
               >
                 {menuOpen ? <CloseIcon className="w-5 h-5 sm:w-6 sm:h-6" /> : <MenuIcon className="w-5 h-5 sm:w-6 sm:h-6" />}
               </button>
@@ -293,13 +510,18 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
                 <button
                   key={id}
                   onClick={() => handleNavigate(id)}
-                  className={`w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
-                    currentPage === id
-                      ? 'bg-gradient-primary text-white shadow-md'
-                      : 'text-gray-700 hover:bg-gray-50 active:bg-gray-100'
-                  }`}
-                  style={{ fontFamily: "'Montserrat', sans-serif" }}
+                  style={mobileNavButton(currentPage === id)}
                   aria-current={currentPage === id ? 'page' : undefined}
+                  onMouseEnter={(e) => {
+                    if (currentPage !== id) {
+                      e.currentTarget.style.backgroundColor = '#f9fafb';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (currentPage !== id) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
                 >
                   <Icon className="w-5 h-5 flex-shrink-0" />
                   <span className="font-medium text-sm sm:text-base">{label}</span>
@@ -314,8 +536,17 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
                   {isAdmin && (
                     <button
                       onClick={() => handleNavigate('admin')}
-                      className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl text-gray-700 hover:bg-gray-50 active:bg-gray-100 transition-all"
-                      style={{ fontFamily: "'Montserrat', sans-serif" }}
+                      style={mobileNavButton(currentPage === 'admin')}
+                      onMouseEnter={(e) => {
+                        if (currentPage !== 'admin') {
+                          e.currentTarget.style.backgroundColor = '#f9fafb';
+                        }
+                      }}
+                      onMouseLeave={(e) => {
+                        if (currentPage !== 'admin') {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                        }
+                      }}
                     >
                       <span className="text-lg flex-shrink-0">🔐</span>
                       <span className="font-medium text-sm sm:text-base">Panel Admin</span>
@@ -324,8 +555,9 @@ export function Navbar({ onNavigate, currentPage, isLoggedIn, isAdmin, onLogout 
 
                   <button
                     onClick={handleLogout}
-                    className="w-full cursor-pointer flex items-center gap-3 px-4 py-3 rounded-xl text-red-600 hover:bg-red-50 active:bg-red-100 transition-all"
-                    style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    style={mobileLogoutButton}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#fef2f2'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
                   >
                     <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />

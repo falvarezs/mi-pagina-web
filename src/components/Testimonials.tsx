@@ -84,48 +84,81 @@ const testimonials: Testimonial[] = [
 
 export function Testimonials() {
   return (
-    <section className="py-20 bg-gradient-to-br from-[#FEF3C7] via-white to-[#F9FAFB]">
+    <section 
+      className="py-12 sm:py-16 lg:py-20 w-full overflow-x-hidden"
+      style={{ 
+        background: 'linear-gradient(135deg, #FEF3C7 0%, #ffffff 50%, #F9FAFB 100%)',
+        backgroundColor: '#FEF3C7',
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+
+        {/* ══ HEADER ══ */}
+        <div className="text-center mb-10 sm:mb-12 lg:mb-16">
+          <h2 
+            className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 mb-3 sm:mb-4" 
+            style={{ fontFamily: "'Playfair Display', serif" }}
+          >
             Lo que Dicen Nuestros Estudiantes
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+          <p 
+            className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto" 
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             Más de 1,200 estudiantes han transformado su pasión por la repostería en habilidades profesionales
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* ══ GRID DE TESTIMONIOS ══ */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 lg:gap-8">
           {testimonials.map((testimonial, index) => (
             <div 
               key={index}
-              className="bg-white rounded-2xl p-8 shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1"
+              className="bg-white rounded-2xl p-5 sm:p-6 lg:p-8 shadow-md hover:shadow-xl transition-all transform hover:-translate-y-1"
             >
               {/* Stars */}
-              <div className="flex space-x-1 mb-4">
+              <div className="flex gap-1 mb-3 sm:mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <StarIcon key={i} className="w-5 h-5 text-[#F59E0B] fill-current" />
+                  <StarIcon key={i} className="w-4 h-4 sm:w-5 sm:h-5 text-[#F59E0B] fill-current" />
                 ))}
               </div>
 
               {/* Testimonial Text */}
-              <p className="text-gray-700 mb-6 leading-relaxed" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              <p 
+                className="text-gray-700 mb-5 sm:mb-6 leading-relaxed text-sm sm:text-base" 
+                style={{ fontFamily: "'Montserrat', sans-serif" }}
+              >
                 "{testimonial.text}"
               </p>
 
               {/* Author */}
               <div className="border-t border-gray-100 pt-4">
-                <div className="flex items-center space-x-3">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#FF6B6B] to-[#F59E0B] rounded-full flex items-center justify-center">
-                    <span className="text-white font-bold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>
+                <div className="flex items-center gap-3">
+                  <div 
+                    className="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center flex-shrink-0"
+                    style={{ 
+                      background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
+                      backgroundColor: '#FF6B6B',
+                    }}
+                  >
+                    <span 
+                      className="text-white font-bold text-base sm:text-lg" 
+                      style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
                       {testimonial.name.charAt(0)}
                     </span>
                   </div>
-                  <div>
-                    <p className="font-semibold text-gray-900" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  <div className="min-w-0 flex-1">
+                    <p 
+                      className="font-semibold text-gray-900 text-sm sm:text-base truncate" 
+                      style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    >
                       {testimonial.name}
                     </p>
-                    <p className="text-sm text-gray-500" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                    <p 
+                      className="text-xs sm:text-sm text-gray-500 truncate" 
+                      style={{ fontFamily: "'Montserrat', sans-serif" }}
+                    >
                       {testimonial.country ? `${testimonial.country} • ` : ''}{testimonial.course}
                     </p>
                   </div>
@@ -135,37 +168,73 @@ export function Testimonials() {
           ))}
         </div>
 
-        {/* Stats */}
-        <div className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8">
+        {/* ══ STATS ══ */}
+        <div className="mt-12 sm:mt-16 lg:mt-20 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
           <div className="text-center">
-            <div className="text-4xl sm:text-5xl font-bold text-[#FF6B6B] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div 
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2" 
+              style={{ 
+                fontFamily: "'Playfair Display', serif",
+                color: '#FF6B6B',
+              }}
+            >
               1,200+
             </div>
-            <p className="text-gray-600 text-sm uppercase tracking-wide" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <p 
+              className="text-gray-600 text-xs sm:text-sm uppercase tracking-wide" 
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
+            >
               Estudiantes
             </p>
           </div>
           <div className="text-center">
-            <div className="text-4xl sm:text-5xl font-bold text-[#F59E0B] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div 
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2" 
+              style={{ 
+                fontFamily: "'Playfair Display', serif",
+                color: '#F59E0B',
+              }}
+            >
               98%
             </div>
-            <p className="text-gray-600 text-sm uppercase tracking-wide" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <p 
+              className="text-gray-600 text-xs sm:text-sm uppercase tracking-wide" 
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
+            >
               Satisfacción
             </p>
           </div>
           <div className="text-center">
-            <div className="text-4xl sm:text-5xl font-bold text-[#14B8A6] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div 
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2" 
+              style={{ 
+                fontFamily: "'Playfair Display', serif",
+                color: '#14B8A6',
+              }}
+            >
               15+
             </div>
-            <p className="text-gray-600 text-sm uppercase tracking-wide" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <p 
+              className="text-gray-600 text-xs sm:text-sm uppercase tracking-wide" 
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
+            >
               Países
             </p>
           </div>
           <div className="text-center">
-            <div className="text-4xl sm:text-5xl font-bold text-[#FF6B6B] mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div 
+              className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-1 sm:mb-2" 
+              style={{ 
+                fontFamily: "'Playfair Display', serif",
+                color: '#FF6B6B',
+              }}
+            >
               4.9
             </div>
-            <p className="text-gray-600 text-sm uppercase tracking-wide" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            <p 
+              className="text-gray-600 text-xs sm:text-sm uppercase tracking-wide" 
+              style={{ fontFamily: "'Montserrat', sans-serif" }}
+            >
               Calificación
             </p>
           </div>

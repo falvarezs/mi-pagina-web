@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Testimonials } from '../components/Testimonials';
 import { AwardIcon, CheckCircleIcon } from '../components/Icons';
 
@@ -5,7 +6,20 @@ interface HomePageProps {
   onNavigate: (page: string, data?: any) => void;
 }
 
-// ── Estilos inline de respaldo (Safari iOS fix) ──────────────
+// ═══════════════════════════════════════════════════════════════════
+// REDES SOCIALES DE LA CHEF (ÚNICO LUGAR PARA CAMBIAR)
+// ═══════════════════════════════════════════════════════════════════
+const SOCIAL = {
+  instagram: 'https://instagram.com/comeback.pasteleria',
+  facebook: 'https://www.facebook.com/comeback.pasteleria', // ← Cambiar si la Chef tiene otra URL
+  whatsapp: 'https://wa.me/584241055470',
+  email: 'mailto:informacion.comeback@gmail.com',
+};
+
+// ═══════════════════════════════════════════════════════════════════
+// ESTILOS INLINE PARA TODOS LOS BOTONES (Safari iOS fix)
+// ═══════════════════════════════════════════════════════════════════
+
 const primaryGradientButton: React.CSSProperties = {
   display: 'inline-flex',
   alignItems: 'center',
@@ -24,6 +38,8 @@ const primaryGradientButton: React.CSSProperties = {
   boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
   transition: 'all 0.3s',
   minHeight: '48px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
 };
 
 const secondaryWhiteButton: React.CSSProperties = {
@@ -41,6 +57,8 @@ const secondaryWhiteButton: React.CSSProperties = {
   fontFamily: "'Montserrat', sans-serif",
   transition: 'all 0.3s',
   minHeight: '48px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
 };
 
 const ctaWhiteButton: React.CSSProperties = {
@@ -60,13 +78,59 @@ const ctaWhiteButton: React.CSSProperties = {
   boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.2)',
   transition: 'all 0.3s',
   minHeight: '56px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
 };
 
+const linkButtonStyle: React.CSSProperties = {
+  background: 'transparent',
+  border: 'none',
+  cursor: 'pointer',
+  padding: '8px 12px',
+  color: '#FF6B6B',
+  fontWeight: 600,
+  fontSize: '15px',
+  fontFamily: "'Montserrat', sans-serif",
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  minHeight: '40px',
+  textAlign: 'left',
+};
+
+const courseCardButton: React.CSSProperties = {
+  background: 'transparent',
+  border: 'none',
+  cursor: 'pointer',
+  padding: 0,
+  textAlign: 'left',
+  width: '100%',
+  fontFamily: "'Montserrat', sans-serif",
+  WebkitAppearance: 'none',
+  appearance: 'none',
+};
+
+const socialCardStyle: React.CSSProperties = {
+  display: 'block',
+  textDecoration: 'none',
+  cursor: 'pointer',
+  WebkitTapHighlightColor: 'transparent',
+};
+
+// ═══════════════════════════════════════════════════════════════════
+
 export function HomePage({ onNavigate }: HomePageProps) {
+  const [imgErrors, setImgErrors] = useState<Record<string, boolean>>({});
+
+  const handleImgError = (key: string) => {
+    setImgErrors(prev => ({ ...prev, [key]: true }));
+  };
+
   return (
     <div className="min-h-screen w-full overflow-x-hidden">
 
-      {/* ══ HERO SECTION ══ */}
+      {/* ═══════════════════════════════════════════════════════════════
+          HERO SECTION
+      ═══════════════════════════════════════════════════════════════ */}
       <section className="relative bg-gradient-to-br from-white via-[#FEF3C7]/30 to-white py-12 sm:py-16 lg:py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
@@ -166,15 +230,25 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             {/* Right Column - IMAGEN CON BADGES */}
             <div className="order-1 lg:order-2">
-              <div className="relative w-64 sm:w-80 md:w-96 lg:w-full max-w-md mx-auto aspect-square">
+              <div className="relative w-56 sm:w-80 md:w-96 lg:w-full max-w-md mx-auto aspect-square">
 
                 <div className="absolute inset-0 z-10">
-                  <div className="w-full h-full rounded-full overflow-hidden shadow-2xl ring-4 sm:ring-8 ring-white/50 ring-offset-4 sm:ring-offset-8 ring-offset-[#FEF3C7]/20">
-                    <img
-                      src="/yulia/pagina-principal.jpg"
-                      alt="Chef Karolain Rondón"
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-full h-full rounded-full overflow-hidden shadow-2xl ring-4 sm:ring-8 ring-white/50 ring-offset-4 sm:ring-offset-8 ring-offset-[#FEF3C7]/20 bg-gray-100">
+                    {!imgErrors['hero'] ? (
+                      <img
+                        src="/yulia/pagina-principal.jpg"
+                        alt="Chef Karolain Rondón"
+                        className="w-full h-full object-cover"
+                        onError={() => handleImgError('hero')}
+                      />
+                    ) : (
+                      <div 
+                        className="w-full h-full flex items-center justify-center text-7xl sm:text-9xl"
+                        style={{ background: 'linear-gradient(135deg, #FF6B6B, #F59E0B)', backgroundColor: '#FF6B6B' }}
+                      >
+                        👩‍🍳
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -282,7 +356,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* ══ MIS ESPECIALIDADES ══ */}
+      {/* ═══════════════════════════════════════════════════════════════
+          MIS ESPECIALIDADES
+      ═══════════════════════════════════════════════════════════════ */}
       <section className="py-12 sm:py-16 lg:py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-10 sm:mb-12 lg:mb-16">
@@ -299,86 +375,81 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
 
-            <div
-              className="group bg-gradient-to-br from-white to-[#FEF3C7]/30 p-6 sm:p-8 rounded-3xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 cursor-pointer"
-              onClick={() => onNavigate('courses')}
-            >
-              <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-5 sm:mb-6">
-                <img
-                  src="/yulia/brownies-saludables.jpg"
-                  alt="Pastelería saludable"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform"
-                />
-              </div>
-              <h3 className="font-bold text-xl sm:text-2xl mb-3 text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Pastelería Saludable
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                Descubre cómo crear postres irresistibles sin azúcar refinada. Aprende técnicas para hornear con ingredientes naturales y nutritivos.
-              </p>
-              <div className="flex items-center text-[#FF6B6B] font-semibold group-hover:gap-2 transition-all" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                <span>Ver curso</span>
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </div>
-            </div>
-
-            <div
-              className="group bg-gradient-to-br from-white to-[#FEF3C7]/30 p-6 sm:p-8 rounded-3xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 cursor-pointer"
-              onClick={() => onNavigate('courses')}
-            >
-              <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-5 sm:mb-6">
-                <img
-                  src="/yulia/cookies-newyork.jpg"
-                  alt="Cookies estilo New York"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform"
-                />
-              </div>
-              <h3 className="font-bold text-xl sm:text-2xl mb-3 text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Cookies Estilo New York
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                Domina el arte de las cookies perfectas: crocantes por fuera, suaves por dentro. Técnicas profesionales de las mejores pastelerías.
-              </p>
-              <div className="flex items-center text-[#F59E0B] font-semibold group-hover:gap-2 transition-all" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                <span>Ver curso</span>
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </div>
-            </div>
-
-            <div
-              className="group bg-gradient-to-br from-white to-[#FEF3C7]/30 p-6 sm:p-8 rounded-3xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 cursor-pointer sm:col-span-2 lg:col-span-1"
-              onClick={() => onNavigate('courses')}
-            >
-              <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-5 sm:mb-6">
-                <img
-                  src="/yulia/bombones.jpg"
-                  alt="Arte en bombones"
-                  className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform"
-                />
-              </div>
-              <h3 className="font-bold text-xl sm:text-2xl mb-3 text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
-                Arte en Bombones
-              </h3>
-              <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                Conviértete en maestro chocolatero. Aprende temperado perfecto, rellenos premium y presentaciones dignas de chocolatería de lujo.
-              </p>
-              <div className="flex items-center text-[#14B8A6] font-semibold group-hover:gap-2 transition-all" style={{ fontFamily: "'Montserrat', sans-serif" }}>
-                <span>Ver curso</span>
-                <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                </svg>
-              </div>
-            </div>
+            {[
+              { 
+                img: 'brownies-saludables.jpg', 
+                key: 'spec1', 
+                title: 'Pastelería Saludable', 
+                desc: 'Descubre cómo crear postres irresistibles sin azúcar refinada. Aprende técnicas para hornear con ingredientes naturales y nutritivos.', 
+                color: '#FF6B6B',
+                emoji: '🍰'
+              },
+              { 
+                img: 'cookies-newyork.jpg', 
+                key: 'spec2', 
+                title: 'Cookies Estilo New York', 
+                desc: 'Domina el arte de las cookies perfectas: crocantes por fuera, suaves por dentro. Técnicas profesionales de las mejores pastelerías.', 
+                color: '#F59E0B',
+                emoji: '🍪'
+              },
+              { 
+                img: 'bombones.jpg', 
+                key: 'spec3', 
+                title: 'Arte en Bombones', 
+                desc: 'Conviértete en maestro chocolatero. Aprende temperado perfecto, rellenos premium y presentaciones dignas de chocolatería de lujo.', 
+                color: '#14B8A6',
+                emoji: '🍫',
+                extra: 'sm:col-span-2 lg:col-span-1'
+              },
+            ].map((spec) => (
+              <button
+                key={spec.key}
+                onClick={() => onNavigate('courses')}
+                style={courseCardButton}
+                className={`group bg-gradient-to-br from-white to-[#FEF3C7]/30 p-6 sm:p-8 rounded-3xl shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-2 border border-gray-100 ${spec.extra || ''}`}
+              >
+                <div className="relative w-full h-40 rounded-2xl overflow-hidden mb-5 sm:mb-6 bg-gray-100">
+                  {!imgErrors[spec.key] ? (
+                    <img
+                      src={`/yulia/${spec.img}`}
+                      alt={spec.title}
+                      className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform"
+                      onError={() => handleImgError(spec.key)}
+                    />
+                  ) : (
+                    <div 
+                      className="w-full h-full flex items-center justify-center text-6xl"
+                      style={{ background: `linear-gradient(135deg, ${spec.color}33, ${spec.color}11)`, backgroundColor: `${spec.color}22` }}
+                    >
+                      {spec.emoji}
+                    </div>
+                  )}
+                </div>
+                <h3 className="font-bold text-xl sm:text-2xl mb-3 text-gray-900" style={{ fontFamily: "'Playfair Display', serif" }}>
+                  {spec.title}
+                </h3>
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed mb-4" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                  {spec.desc}
+                </p>
+                <div 
+                  className="flex items-center font-semibold group-hover:gap-2 transition-all" 
+                  style={{ fontFamily: "'Montserrat', sans-serif", color: spec.color }}
+                >
+                  <span>Ver curso</span>
+                  <svg className="w-5 h-5 group-hover:translate-x-1 transition-transform ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </div>
+              </button>
+            ))}
 
           </div>
         </div>
       </section>
 
-      {/* ══ REDES SOCIALES ══ */}
+      {/* ═══════════════════════════════════════════════════════════════
+          REDES SOCIALES (ENLACES CORREGIDOS)
+      ═══════════════════════════════════════════════════════════════ */}
       <section className="py-12 sm:py-16 px-4 bg-[#F9FAFB]">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-8 sm:mb-10">
@@ -392,11 +463,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
 
+            {/* Instagram */}
             <a
-              href="https://instagram.com/comeback.pasteleria"
+              href={SOCIAL.instagram}
               target="_blank"
               rel="noopener noreferrer"
-              className="cursor-pointer bg-white rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              style={socialCardStyle}
+              className="bg-white rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              aria-label="Síguenos en Instagram"
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-pink-100 rounded-xl flex items-center justify-center mb-3 sm:mb-4">
                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-pink-600" fill="currentColor" viewBox="0 0 24 24">
@@ -407,11 +481,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <p className="text-xs sm:text-sm text-gray-600 truncate">@comeback.pasteleria</p>
             </a>
 
+            {/* Facebook */}
             <a
-              href="https://facebook.com"
+              href={SOCIAL.facebook}
               target="_blank"
               rel="noopener noreferrer"
-              className="cursor-pointer bg-white rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              style={socialCardStyle}
+              className="bg-white rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              aria-label="Síguenos en Facebook"
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-3 sm:mb-4">
                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
@@ -419,14 +496,17 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </svg>
               </div>
               <h3 className="font-semibold text-gray-900 text-sm sm:text-base" style={{ fontFamily: "'Montserrat', sans-serif" }}>Facebook</h3>
-              <p className="text-xs sm:text-sm text-gray-600 truncate">comeback pasteleria</p>
+              <p className="text-xs sm:text-sm text-gray-600 truncate">comeback.pasteleria</p>
             </a>
 
+            {/* WhatsApp */}
             <a
-              href="https://wa.me/584241055470"
+              href={SOCIAL.whatsapp}
               target="_blank"
               rel="noopener noreferrer"
-              className="cursor-pointer bg-white rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              style={socialCardStyle}
+              className="bg-white rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              aria-label="Contáctanos por WhatsApp"
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-xl flex items-center justify-center mb-3 sm:mb-4">
                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" fill="currentColor" viewBox="0 0 24 24">
@@ -437,9 +517,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
               <p className="text-xs sm:text-sm text-gray-600 truncate">+58 424 105 5470</p>
             </a>
 
+            {/* Email */}
             <a
-              href="mailto:informacion.comeback@gmail.com"
-              className="cursor-pointer bg-white rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              href={SOCIAL.email}
+              style={socialCardStyle}
+              className="bg-white rounded-2xl p-4 sm:p-6 shadow-md hover:shadow-xl transition-all border border-gray-100"
+              aria-label="Envíanos un correo"
             >
               <div className="w-10 h-10 sm:w-12 sm:h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-3 sm:mb-4">
                 <svg className="w-5 h-5 sm:w-6 sm:h-6 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -447,14 +530,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 </svg>
               </div>
               <h3 className="font-semibold text-gray-900 text-sm sm:text-base" style={{ fontFamily: "'Montserrat', sans-serif" }}>Email</h3>
-              <p className="text-xs sm:text-sm text-gray-600 truncate">informacion.comeback@gmail.com</p>
+              <p className="text-xs sm:text-sm text-gray-600 truncate break-all">informacion.comeback@gmail.com</p>
             </a>
 
           </div>
         </div>
       </section>
 
-      {/* ══ EXPERIENCIAS FILA 1 ══ */}
+      {/* ═══════════════════════════════════════════════════════════════
+          EXPERIENCIAS FILA 1
+      ═══════════════════════════════════════════════════════════════ */}
       <section className="py-12 sm:py-16 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between mb-8 sm:mb-10 gap-3 sm:gap-4">
@@ -468,56 +553,88 @@ export function HomePage({ onNavigate }: HomePageProps) {
             </div>
             <button
               onClick={() => onNavigate('courses')}
-              className="cursor-pointer text-[#FF6B6B] font-semibold hover:underline text-sm sm:text-base self-start lg:self-auto"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
+              style={linkButtonStyle}
+              className="hover:underline self-start lg:self-auto"
             >
               Ver cursos →
             </button>
           </div>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-            {['foto1.jpg', 'foto2.jpg', 'foto3.jpg'].map((photo) => (
-              <div 
-                key={photo} 
-                className="group overflow-hidden rounded-2xl shadow-md bg-gray-100 aspect-[4/3]"
-              >
-                <img
-                  src={`/yulia/${photo}`}
-                  alt="Taller de repostería con Karolain Rondón"
-                  className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-            ))}
+            {['foto1.jpg', 'foto2.jpg', 'foto3.jpg'].map((photo, i) => {
+              const errorKey = `exp1-${i}`;
+              return (
+                <div 
+                  key={photo} 
+                  className="group overflow-hidden rounded-2xl shadow-md bg-gray-100 aspect-[4/3]"
+                >
+                  {!imgErrors[errorKey] ? (
+                    <img
+                      src={`/yulia/${photo}`}
+                      alt="Taller de repostería con Karolain Rondón"
+                      className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      onError={() => handleImgError(errorKey)}
+                    />
+                  ) : (
+                    <div 
+                      className="w-full h-full flex items-center justify-center text-5xl"
+                      style={{ background: 'linear-gradient(135deg, #FEF3C7, #FED7AA)', backgroundColor: '#FEF3C7' }}
+                    >
+                      🎂
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ══ EXPERIENCIAS FILA 2 ══ */}
+      {/* ═══════════════════════════════════════════════════════════════
+          EXPERIENCIAS FILA 2
+      ═══════════════════════════════════════════════════════════════ */}
       <section className="py-8 sm:py-12 px-4 bg-[#F9FAFB]">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-            {['foto4.jpg', 'foto5.jpg', 'foto6.jpg'].map((photo) => (
-              <div 
-                key={photo} 
-                className="group overflow-hidden rounded-2xl shadow-md bg-white aspect-[4/3]"
-              >
-                <img
-                  src={`/yulia/${photo}`}
-                  alt="Momentos reales de los cursos de Karolain Rondón"
-                  className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-              </div>
-            ))}
+            {['foto4.jpg', 'foto5.jpg', 'foto6.jpg'].map((photo, i) => {
+              const errorKey = `exp2-${i}`;
+              return (
+                <div 
+                  key={photo} 
+                  className="group overflow-hidden rounded-2xl shadow-md bg-white aspect-[4/3]"
+                >
+                  {!imgErrors[errorKey] ? (
+                    <img
+                      src={`/yulia/${photo}`}
+                      alt="Momentos reales de los cursos de Karolain Rondón"
+                      className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
+                      loading="lazy"
+                      onError={() => handleImgError(errorKey)}
+                    />
+                  ) : (
+                    <div 
+                      className="w-full h-full flex items-center justify-center text-5xl"
+                      style={{ background: 'linear-gradient(135deg, #FEF3C7, #FED7AA)', backgroundColor: '#FEF3C7' }}
+                    >
+                      🧁
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* ══ TESTIMONIOS ══ */}
+      {/* ═══════════════════════════════════════════════════════════════
+          TESTIMONIOS
+      ═══════════════════════════════════════════════════════════════ */}
       <Testimonials />
 
-      {/* ══ CTA FINAL ══ */}
+      {/* ═══════════════════════════════════════════════════════════════
+          CTA FINAL
+      ═══════════════════════════════════════════════════════════════ */}
       <section 
         className="py-12 sm:py-16 lg:py-20 px-4 text-white relative overflow-hidden"
         style={{ background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 50%, #FF6B6B 100%)', backgroundColor: '#FF6B6B' }}

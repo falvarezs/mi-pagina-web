@@ -9,7 +9,10 @@ interface CheckoutPageProps {
 
 type PageState = 'loading' | 'contact' | 'already-purchased';
 
-// ── Estilos inline de respaldo (Safari iOS fix) ──────────────
+// ═══════════════════════════════════════════════════════════════════
+// ESTILOS INLINE PARA TODOS LOS BOTONES (Safari iOS fix)
+// ═══════════════════════════════════════════════════════════════════
+
 const whatsappButtonStyle: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
@@ -29,6 +32,8 @@ const whatsappButtonStyle: React.CSSProperties = {
   transition: 'all 0.3s',
   fontFamily: "'Montserrat', sans-serif",
   minHeight: '56px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
 };
 
 const primaryButtonStyle: React.CSSProperties = {
@@ -45,6 +50,10 @@ const primaryButtonStyle: React.CSSProperties = {
   fontSize: '15px',
   minHeight: '44px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+  textDecoration: 'none',
 };
 
 const secondaryButtonStyle: React.CSSProperties = {
@@ -61,12 +70,51 @@ const secondaryButtonStyle: React.CSSProperties = {
   fontSize: '15px',
   minHeight: '44px',
   transition: 'all 0.2s',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
 };
+
+const backButtonStyle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: '8px',
+  padding: '8px 12px',
+  backgroundColor: 'transparent',
+  color: '#6b7280',
+  fontWeight: 500,
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '14px',
+  minHeight: '44px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+};
+
+const linkButtonStyle: React.CSSProperties = {
+  display: 'inline-block',
+  padding: '12px 20px',
+  backgroundColor: 'transparent',
+  color: '#FF6B6B',
+  fontWeight: 600,
+  border: 'none',
+  cursor: 'pointer',
+  fontSize: '16px',
+  minHeight: '44px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+  fontFamily: "'Montserrat', sans-serif",
+  textDecoration: 'underline',
+};
+
+// ═══════════════════════════════════════════════════════════════════
 
 export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
   const course = courses.find(c => c.id === Number(courseId));
   const [pageState, setPageState] = useState<PageState>('loading');
   const [userName, setUserName] = useState('');
+  const [imgError, setImgError] = useState(false);
 
   const WHATSAPP_NUMBER = '584241055470';
 
@@ -124,7 +172,7 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
           </h2>
           <button
             onClick={() => onNavigate('courses')}
-            className="cursor-pointer text-[#FF6B6B] hover:underline font-semibold"
+            style={linkButtonStyle}
           >
             Ver todos los cursos
           </button>
@@ -216,12 +264,12 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 sm:pt-8">
         <button
           onClick={() => onNavigate('course', { slug: course.slug })}
-          className="cursor-pointer inline-flex items-center text-gray-500 hover:text-[#FF6B6B] transition-colors font-medium text-sm sm:text-base"
+          style={backButtonStyle}
         >
-          <svg className="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg style={{ width: '20px', height: '20px', flexShrink: 0 }} fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Volver al curso
+          <span>Volver al curso</span>
         </button>
       </div>
 
@@ -264,11 +312,21 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
 
             <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 mb-6 flex items-center gap-4 sm:gap-5 border border-gray-100">
               <div className="relative flex-shrink-0">
-                <img
-                  src="/yulia/pagina-principal.jpg"
-                  alt="Chef Karolain Rondón"
-                  className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover object-center shadow-md"
-                />
+                {!imgError ? (
+                  <img
+                    src="/yulia/pagina-principal.jpg"
+                    alt="Chef Karolain Rondón"
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover object-center shadow-md"
+                    onError={() => setImgError(true)}
+                  />
+                ) : (
+                  <div 
+                    className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-2xl sm:text-3xl shadow-md"
+                    style={{ background: 'linear-gradient(135deg, #FF6B6B, #F59E0B)', backgroundColor: '#FF6B6B', color: '#ffffff' }}
+                  >
+                    👩‍🍳
+                  </div>
+                )}
                 <div className="absolute -bottom-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-green-500 rounded-full border-2 border-white flex items-center justify-center">
                   <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full"></div>
                 </div>
@@ -329,7 +387,7 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
                   <div className="flex items-start gap-3">
                     <div 
                       className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-2xl sm:text-3xl flex-shrink-0 shadow-sm"
-                      style={{ background: 'linear-gradient(135deg, #FEF3C7 0%, #FED7AA 100%)' }}
+                      style={{ background: 'linear-gradient(135deg, #FEF3C7 0%, #FED7AA 100%)', backgroundColor: '#FEF3C7' }}
                     >
                       {t.avatar}
                     </div>
@@ -394,11 +452,14 @@ export function CheckoutPage({ courseId, onNavigate }: CheckoutPageProps) {
 
             <div className="bg-white rounded-2xl shadow-md overflow-hidden border border-gray-100">
               <div className="relative">
-                <div className="w-full h-40 sm:h-48 overflow-hidden">
+                <div className="w-full h-40 sm:h-48 overflow-hidden bg-gray-100">
                   <img
                     src={course.thumbnail}
                     alt={course.title}
                     className="w-full h-full object-cover object-center"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).style.display = 'none';
+                    }}
                   />
                 </div>
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
