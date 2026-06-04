@@ -58,31 +58,93 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
   const [validSession, setValidSession]       = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
 
-  // ── Validar que el usuario llegó con un token válido ─────────────
+  // ═══════════════════════════════════════════════════════════════════
+  // NUEVO: Procesar el token del hash MANUALMENTE
+  // ═══════════════════════════════════════════════════════════════════
   useEffect(() => {
-    const validateRecoveryToken = async () => {
+    const handleRecoveryToken = async () => {
       try {
-        // Supabase coloca el token en el hash de la URL (#access_token=...)
-        const { data, error } = await supabase.auth.getSession();
+        console.log('🔍 Iniciando validación de token...');
+        console.log('🔍 URL completa:', window.location.href);
+        console.log('🔍 Hash:', window.location.hash);
 
-        if (error) {
-          console.error('❌ Error validando sesión:', error);
+        // 1. Verificar si hay token en el hash
+        const hash = window.location.hash;
+
+        if (!hash || !hash.includes('access_token')) {
+          console.log('❌ No hay token en la URL');
           setMessage({
             type: 'error',
-            text: '❌ El enlace no es válido o ya expiró. Solicita uno nuevo.',
+            text: '❌ No se encontró un token de recuperación. Solicita un nuevo enlace.',
           });
           setValidSession(false);
-        } else if (data.session) {
-          console.log('✅ Sesión de recuperación válida');
-          setValidSession(true);
-        } else {
+          setValidating(false);
+          return;
+        }
+
+        // 2. Extraer tokens del hash
+        const params = new URLSearchParams(hash.substring(1)); // Quita el "#"
+        const accessToken = params.get('access_token');
+        const refreshToken = params.get('refresh_token');
+        const type = params.get('type');
+
+        console.log('🔑 Type:', type);
+        console.log('🔑 Tiene access_token:', !!accessToken);
+        console.log('🔑 Tiene refresh_token:', !!refreshToken);
+
+        // 3. Verificar que sea un token de recuperación
+        if (type !== 'recovery') {
+          console.log('❌ Type no es recovery:', type);
           setMessage({
             type: 'error',
-            text: '❌ Enlace inválido o expirado. Solicita uno nuevo desde "Olvidaste tu contraseña".',
+            text: '❌ El enlace no es válido para recuperar contraseña.',
+          });
+          setValidSession(false);
+          setValidating(false);
+          return;
+        }
+
+        if (!accessToken || !refreshToken) {
+          console.log('❌ Faltan tokens');
+          setMessage({
+            type: 'error',
+            text: '❌ El enlace está incompleto. Solicita un nuevo enlace.',
+          });
+          setValidSession(false);
+          setValidating(false);
+          return;
+        }
+
+        // 4. ESTABLECER la sesión con los tokens del hash
+        console.log('⏳ Estableciendo sesión con tokens...');
+        const { data, error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+
+        if (error) {
+          console.error('❌ Error al establecer sesión:', error);
+          setMessage({
+            type: 'error',
+            text: `❌ ${error.message || 'El enlace expiró. Solicita uno nuevo.'}`,
+          });
+          setValidSession(false);
+          setValidating(false);
+          return;
+        }
+
+        if (data.session) {
+          console.log('✅ Sesión establecida correctamente:', data.session.user.email);
+          setValidSession(true);
+        } else {
+          console.log('❌ No se pudo establecer la sesión');
+          setMessage({
+            type: 'error',
+            text: '❌ No se pudo validar el enlace. Intenta de nuevo.',
           });
           setValidSession(false);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.error('❌ Error inesperado:', err);
         setMessage({
           type: 'error',
@@ -94,7 +156,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
       }
     };
 
-    validateRecoveryToken();
+    handleRecoveryToken();
   }, []);
 
   // ── Cambiar contraseña ───────────────────────────────────────────
@@ -114,6 +176,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
     setMessage(null);
 
     try {
+      console.log('⏳ Cambiando contraseña...');
       const { error } = await supabase.auth.updateUser({ password });
 
       if (error) {
@@ -126,6 +189,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
         return;
       }
 
+      console.log('✅ Contraseña cambiada correctamente');
       setMessage({
         type: 'success',
         text: '✅ ¡Contraseña actualizada! Redirigiendo al login...',
@@ -216,13 +280,14 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
                       disabled={loading}
                       autoComplete="new-password"
                       className="w-full px-4 py-3 pr-12 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-300 focus:border-transparent disabled:opacity-50 transition-all text-gray-800"
+                      style={{ fontSize: '16px' }}
                     />
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
                       tabIndex={-1}
-                      style={{ background: 'transparent', border: 'none' }}
+                      style={{ background: 'transparent', border: 'none', WebkitAppearance: 'none', appearance: 'none' }}
                     >
                       {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                     </button>
@@ -244,6 +309,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
                     disabled={loading}
                     autoComplete="new-password"
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-300 focus:border-transparent disabled:opacity-50 transition-all text-gray-800"
+                    style={{ fontSize: '16px' }}
                   />
                 </div>
 
