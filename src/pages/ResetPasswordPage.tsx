@@ -49,6 +49,70 @@ const buttonPrimaryStyle: React.CSSProperties = {
   appearance: 'none',
 };
 
+// ═══════════════════════════════════════════════════════════════════
+// TRADUCTOR DE ERRORES DE SUPABASE AL ESPAÑOL
+// ═══════════════════════════════════════════════════════════════════
+const traducirError = (mensaje: string): string => {
+  const msg = mensaje.toLowerCase();
+
+  // Errores de contraseña
+  if (msg.includes('new password should be different from the old password')) {
+    return '⚠️ La nueva contraseña debe ser diferente a la anterior.';
+  }
+  if (msg.includes('password should be at least')) {
+    return '⚠️ La contraseña debe tener al menos 6 caracteres.';
+  }
+  if (msg.includes('password is too short') || msg.includes('weak password')) {
+    return '⚠️ La contraseña es muy corta o débil. Usa al menos 6 caracteres.';
+  }
+  if (msg.includes('password should contain')) {
+    return '⚠️ La contraseña debe contener letras y números.';
+  }
+
+  // Errores de sesión / token
+  if (msg.includes('invalid token') || msg.includes('token expired') || msg.includes('jwt expired')) {
+    return '⏱️ El enlace expiró. Solicita uno nuevo desde "Olvidaste tu contraseña".';
+  }
+  if (msg.includes('session not found') || msg.includes('no session')) {
+    return '⚠️ La sesión expiró. Solicita un nuevo enlace.';
+  }
+  if (msg.includes('invalid login credentials')) {
+    return '❌ Email o contraseña incorrectos.';
+  }
+
+  // Errores de conexión
+  if (msg.includes('network') || msg.includes('fetch') || msg.includes('failed to fetch')) {
+    return '🌐 Error de conexión. Verifica tu internet e intenta de nuevo.';
+  }
+
+  // Errores de rate limit
+  if (msg.includes('rate limit') || msg.includes('too many requests')) {
+    return '⏳ Demasiados intentos. Espera unos minutos e intenta de nuevo.';
+  }
+
+  // Errores de email
+  if (msg.includes('user not found') || msg.includes('email not found')) {
+    return '❌ No existe una cuenta con ese email.';
+  }
+  if (msg.includes('email already')) {
+    return '⚠️ Este email ya está registrado.';
+  }
+  if (msg.includes('invalid email')) {
+    return '⚠️ El formato del email no es válido.';
+  }
+
+  // Errores generales
+  if (msg.includes('unauthorized')) {
+    return '🔒 No tienes autorización. El enlace puede haber expirado.';
+  }
+  if (msg.includes('forbidden')) {
+    return '🚫 Acceso denegado.';
+  }
+
+  // Si no encontramos traducción, mostrar mensaje genérico
+  return `❌ Ocurrió un error: ${mensaje}`;
+};
+
 export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
   const [password, setPassword]               = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -66,13 +130,10 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
     const handleRecoveryToken = async () => {
       try {
         console.log('🔍 Iniciando validación de token...');
-        console.log('🔍 URL completa:', window.location.href);
-        console.log('🔍 Hash:', window.location.hash);
 
         const hash = window.location.hash;
 
         if (!hash || !hash.includes('access_token')) {
-          console.log('❌ No hay token en la URL');
           setMessage({
             type: 'error',
             text: '❌ No se encontró un token de recuperación. Solicita un nuevo enlace.',
@@ -87,12 +148,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
         const refreshToken = params.get('refresh_token');
         const type = params.get('type');
 
-        console.log('🔑 Type:', type);
-        console.log('🔑 Tiene access_token:', !!accessToken);
-        console.log('🔑 Tiene refresh_token:', !!refreshToken);
-
         if (type !== 'recovery') {
-          console.log('❌ Type no es recovery:', type);
           setMessage({
             type: 'error',
             text: '❌ El enlace no es válido para recuperar contraseña.',
@@ -103,7 +159,6 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
         }
 
         if (!accessToken || !refreshToken) {
-          console.log('❌ Faltan tokens');
           setMessage({
             type: 'error',
             text: '❌ El enlace está incompleto. Solicita un nuevo enlace.',
@@ -123,7 +178,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
           console.error('❌ Error al establecer sesión:', error);
           setMessage({
             type: 'error',
-            text: `❌ ${error.message || 'El enlace expiró. Solicita uno nuevo.'}`,
+            text: traducirError(error.message),
           });
           setValidSession(false);
           setValidating(false);
@@ -134,7 +189,6 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
           console.log('✅ Sesión establecida correctamente:', data.session.user.email);
           setValidSession(true);
         } else {
-          console.log('❌ No se pudo establecer la sesión');
           setMessage({
             type: 'error',
             text: '❌ No se pudo validar el enlace. Intenta de nuevo.',
@@ -157,7 +211,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
   }, []);
 
   // ═══════════════════════════════════════════════════════════════════
-  // Cambiar contraseña - MEJORADO
+  // Cambiar contraseña - CON TRADUCCIÓN DE ERRORES
   // ═══════════════════════════════════════════════════════════════════
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -180,9 +234,10 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
 
       if (error) {
         console.error('❌ Error cambiando contraseña:', error);
+        // ✨ AQUÍ está la magia: traducimos el error
         setMessage({
           type: 'error',
-          text: `❌ ${error.message || 'No se pudo cambiar la contraseña.'}`,
+          text: traducirError(error.message),
         });
         setLoading(false);
         return;
@@ -194,7 +249,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
       setPasswordChanged(true);
       setLoading(false);
 
-      // Cerrar sesión silenciosamente en background (no esperar)
+      // Cerrar sesión silenciosamente en background
       supabase.auth.signOut().catch(err => {
         console.warn('Error al cerrar sesión:', err);
       });
@@ -211,11 +266,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
   // ═══════════════════════════════════════════════════════════════════
   const handleGoToLogin = () => {
     console.log('🚪 Redirigiendo al login...');
-
-    // Limpiar el hash de la URL
     window.history.replaceState(null, '', window.location.pathname);
-
-    // Forzar recarga limpia
     window.location.href = window.location.origin + '/';
   };
 
