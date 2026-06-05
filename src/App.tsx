@@ -26,29 +26,40 @@ interface PageData {
 
 const ADMIN_EMAIL = 'informacion.comeback@gmail.com';
 
+// ═══════════════════════════════════════════════════════════════════
+// DETECTAR SI ES RECUPERACIÓN ANTES DE QUE REACT RENDERICE
+// ═══════════════════════════════════════════════════════════════════
+const isRecoveryURL = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  const hash = window.location.hash;
+  return hash.includes('type=recovery') && hash.includes('access_token');
+};
+
 export function App() {
-  const [currentPage, setCurrentPage] = useState<Page>('home');
+  // Si la URL es de recuperación, empezamos directo en reset-password
+  const [currentPage, setCurrentPage] = useState<Page>(
+    isRecoveryURL() ? 'reset-password' : 'home'
+  );
   const [pageData, setPageData]       = useState<PageData>({});
   const [isLoggedIn, setIsLoggedIn]   = useState(false);
   const [userEmail, setUserEmail]     = useState('');
   const [authLoading, setAuthLoading] = useState(true);
-  const [isPasswordRecovery, setIsPasswordRecovery] = useState(false);
+
+  // Bandera de recuperación (se mantiene durante todo el flujo)
+  const [isPasswordRecovery] = useState(isRecoveryURL());
 
   const isAdmin = userEmail === ADMIN_EMAIL;
 
-  // ── Detectar si la URL viene de un email de recuperación ──────────
   useEffect(() => {
-    const hash = window.location.hash;
-
-    if (hash && hash.includes('type=recovery')) {
-      console.log('🔑 Detectado enlace de recuperación de contraseña');
-      setIsPasswordRecovery(true);
-      setCurrentPage('reset-password');
+    // Si estamos en flujo de recuperación, NO cargar sesión normal
+    // Dejamos que ResetPasswordPage maneje todo
+    if (isPasswordRecovery) {
+      console.log('🔑 Flujo de recuperación detectado, App.tsx no interfiere');
+      setAuthLoading(false);
+      return;
     }
-  }, []);
 
-  useEffect(() => {
-    // ── 1. Cargar sesión existente PRIMERO ──────────────────────────
+    // ── Cargar sesión existente (solo si NO es recovery) ──────────
     const loadSession = async () => {
       try {
         const { data } = await supabase.auth.getSession();
@@ -65,27 +76,18 @@ export function App() {
 
     loadSession();
 
-    // ── 2. Escuchar cambios futuros de sesión ──────────────────────
+    // ── Escuchar cambios futuros de sesión ──────────────────────
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
         console.log('Auth event:', event);
 
-        // 🔑 Detectar evento de recuperación de contraseña
-        if (event === 'PASSWORD_RECOVERY') {
-          console.log('🔑 Evento PASSWORD_RECOVERY detectado');
-          setIsPasswordRecovery(true);
-          setCurrentPage('reset-password');
-          setAuthLoading(false);
+        // IGNORAR completamente eventos durante recuperación
+        if (isPasswordRecovery) {
+          console.log('⏭️ Ignorando evento durante recuperación');
           return;
         }
 
         if (event === 'SIGNED_IN' && session?.user) {
-          // Si estamos en flujo de recuperación, NO hacer nada (que termine el reset)
-          if (isPasswordRecovery) {
-            console.log('⏭️ Ignorando SIGNED_IN durante recuperación');
-            return;
-          }
-
           setIsLoggedIn(true);
           setUserEmail(session.user.email ?? '');
 
@@ -116,7 +118,6 @@ export function App() {
         } else if (event === 'SIGNED_OUT') {
           setIsLoggedIn(false);
           setUserEmail('');
-          setIsPasswordRecovery(false);
 
         } else if (event === 'TOKEN_REFRESHED' && session?.user) {
           setIsLoggedIn(true);
@@ -133,11 +134,6 @@ export function App() {
 
   // ── Navegación ────────────────────────────────────────────────────
   const navigate = (page: string, data?: any) => {
-    // Si salimos de reset-password, limpiar el estado
-    if (currentPage === 'reset-password' && page !== 'reset-password') {
-      setIsPasswordRecovery(false);
-    }
-
     setCurrentPage(page as Page);
     if (data) setPageData(data);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -155,8 +151,8 @@ export function App() {
     navigate('home');
   };
 
-  // ── Pantalla de carga inicial ─────────────────────────────────────
-  if (authLoading) {
+  // ── Pantalla de carga inicial (solo si NO es recovery) ──────────
+  if (authLoading && !isPasswordRecovery) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-[#FEF3C7]/30 to-white px-4">
         <div className="text-center">
@@ -177,7 +173,9 @@ export function App() {
     );
   }
 
-  // ── Si estamos en flujo de recuperación → mostrar SOLO esa página ─
+  // ═══════════════════════════════════════════════════════════════════
+  // FLUJO DE RECUPERACIÓN: solo mostrar ResetPasswordPage
+  // ═══════════════════════════════════════════════════════════════════
   if (currentPage === 'reset-password' || isPasswordRecovery) {
     return (
       <div className="min-h-screen w-full overflow-x-hidden">
@@ -186,7 +184,7 @@ export function App() {
     );
   }
 
-  // ── Renderizar página ─────────────────────────────────────────────
+  // ── Renderizar página normal ────────────────────────────────────
   const renderPage = () => {
     switch (currentPage) {
       case 'home':
