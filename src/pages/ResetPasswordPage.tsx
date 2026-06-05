@@ -56,10 +56,11 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
   const [loading, setLoading]                 = useState(false);
   const [validating, setValidating]           = useState(true);
   const [validSession, setValidSession]       = useState(false);
+  const [passwordChanged, setPasswordChanged] = useState(false);
   const [message, setMessage] = useState<{ type: 'error' | 'success'; text: string } | null>(null);
 
   // ═══════════════════════════════════════════════════════════════════
-  // NUEVO: Procesar el token del hash MANUALMENTE
+  // Procesar el token del hash MANUALMENTE
   // ═══════════════════════════════════════════════════════════════════
   useEffect(() => {
     const handleRecoveryToken = async () => {
@@ -68,7 +69,6 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
         console.log('🔍 URL completa:', window.location.href);
         console.log('🔍 Hash:', window.location.hash);
 
-        // 1. Verificar si hay token en el hash
         const hash = window.location.hash;
 
         if (!hash || !hash.includes('access_token')) {
@@ -82,8 +82,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
           return;
         }
 
-        // 2. Extraer tokens del hash
-        const params = new URLSearchParams(hash.substring(1)); // Quita el "#"
+        const params = new URLSearchParams(hash.substring(1));
         const accessToken = params.get('access_token');
         const refreshToken = params.get('refresh_token');
         const type = params.get('type');
@@ -92,7 +91,6 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
         console.log('🔑 Tiene access_token:', !!accessToken);
         console.log('🔑 Tiene refresh_token:', !!refreshToken);
 
-        // 3. Verificar que sea un token de recuperación
         if (type !== 'recovery') {
           console.log('❌ Type no es recovery:', type);
           setMessage({
@@ -115,7 +113,6 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
           return;
         }
 
-        // 4. ESTABLECER la sesión con los tokens del hash
         console.log('⏳ Estableciendo sesión con tokens...');
         const { data, error } = await supabase.auth.setSession({
           access_token: accessToken,
@@ -159,7 +156,9 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
     handleRecoveryToken();
   }, []);
 
-  // ── Cambiar contraseña ───────────────────────────────────────────
+  // ═══════════════════════════════════════════════════════════════════
+  // Cambiar contraseña - MEJORADO
+  // ═══════════════════════════════════════════════════════════════════
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -190,24 +189,34 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
       }
 
       console.log('✅ Contraseña cambiada correctamente');
-      setMessage({
-        type: 'success',
-        text: '✅ ¡Contraseña actualizada! Redirigiendo al login...',
-      });
 
-      // Cerrar sesión y redirigir al login
-      setTimeout(async () => {
-        await supabase.auth.signOut();
-        // Limpiar el hash de la URL
-        window.history.replaceState(null, '', window.location.pathname);
-        onNavigate('login');
-      }, 2500);
+      // ─── MARCAR COMO CAMBIADA ────────────────────────────────
+      setPasswordChanged(true);
+      setLoading(false);
+
+      // Cerrar sesión silenciosamente en background (no esperar)
+      supabase.auth.signOut().catch(err => {
+        console.warn('Error al cerrar sesión:', err);
+      });
 
     } catch (err: any) {
       console.error('❌ Error inesperado:', err);
       setMessage({ type: 'error', text: '🌐 Error de conexión. Intenta de nuevo.' });
       setLoading(false);
     }
+  };
+
+  // ═══════════════════════════════════════════════════════════════════
+  // Acción manual: Ir al login limpiando todo
+  // ═══════════════════════════════════════════════════════════════════
+  const handleGoToLogin = () => {
+    console.log('🚪 Redirigiendo al login...');
+
+    // Limpiar el hash de la URL
+    window.history.replaceState(null, '', window.location.pathname);
+
+    // Forzar recarga limpia
+    window.location.href = window.location.origin + '/';
   };
 
   // ── Pantalla de validación inicial ───────────────────────────────
@@ -218,6 +227,46 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
           <div className="w-16 h-16 border-4 border-rose-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <p className="text-gray-600 text-sm sm:text-base" style={{ fontFamily: "'Montserrat', sans-serif" }}>
             Validando enlace de recuperación...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ═══════════════════════════════════════════════════════════════════
+  // Pantalla de ÉXITO - después de cambiar password
+  // ═══════════════════════════════════════════════════════════════════
+  if (passwordChanged) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-rose-50 via-pink-50 to-orange-50 flex items-center justify-center px-4 py-8 sm:py-12">
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 text-center">
+            <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-5">
+              <svg className="w-12 h-12 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>
+              ¡Contraseña Actualizada! 🎉
+            </h2>
+
+            <p className="text-gray-600 mb-6 text-sm sm:text-base" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+              Tu contraseña se cambió correctamente.
+              <br />
+              Ahora puedes iniciar sesión con tu nueva contraseña.
+            </p>
+
+            <button
+              onClick={handleGoToLogin}
+              style={buttonPrimaryStyle}
+            >
+              🔐 Ir a Iniciar Sesión
+            </button>
+          </div>
+
+          <p className="text-center text-xs text-gray-400 mt-6" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+            © 2025 Academia Chef Karolain Rondón
           </p>
         </div>
       </div>
@@ -351,10 +400,7 @@ export function ResetPasswordPage({ onNavigate }: ResetPasswordPageProps) {
                 Por favor solicita un nuevo enlace de recuperación desde la página de inicio de sesión.
               </p>
               <button
-                onClick={() => {
-                  window.history.replaceState(null, '', window.location.pathname);
-                  onNavigate('login');
-                }}
+                onClick={handleGoToLogin}
                 style={buttonPrimaryStyle}
               >
                 ← Volver al Login
