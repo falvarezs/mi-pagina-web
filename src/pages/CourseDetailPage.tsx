@@ -138,6 +138,7 @@ const socialButtonStyle = (bgColor: string): React.CSSProperties => ({
   appearance: 'none',
   textDecoration: 'none',
   color: '#ffffff',
+  flexShrink: 0,
 });
 
 // ═══════════════════════════════════════════════════════════════════
@@ -190,7 +191,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
 
   if (!course) {
     return (
-      <div className="min-h-screen flex items-center justify-center px-4">
+      <div className="min-h-screen flex items-center justify-center px-4 w-full overflow-x-hidden">
         <div className="text-center">
           <h2 className="text-2xl font-bold mb-4">Curso no encontrado</h2>
           <button
@@ -215,7 +216,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
   const totalLessons = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
 
   // ═══════════════════════════════════════════════════════════════════
-  // FUNCIONES DE COMPARTIR (NUEVAS - REALMENTE FUNCIONAN)
+  // FUNCIONES DE COMPARTIR
   // ═══════════════════════════════════════════════════════════════════
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
@@ -233,7 +234,6 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
       setCopiedLink(true);
       setTimeout(() => setCopiedLink(false), 2000);
     } catch {
-      // Fallback para navegadores viejos
       const textarea = document.createElement('textarea');
       textarea.value = currentUrl;
       document.body.appendChild(textarea);
@@ -263,7 +263,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
 
     if (purchaseStatus === 'approved') {
       return (
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-green-400">
+        <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 border-2 border-green-400">
           <div className="flex items-center justify-center mb-4">
             <span className="px-4 py-1 bg-green-100 text-green-700 rounded-full text-sm font-bold">
               ✅ Curso Adquirido
@@ -275,10 +275,10 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h3 className="text-lg font-bold text-gray-900 mb-1" style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}>
               ¡Ya tienes este curso!
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600" style={{ wordBreak: 'break-word' }}>
               Tu pago fue aprobado. Puedes acceder a todos los videos ahora mismo.
             </p>
           </div>
@@ -299,7 +299,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
 
     if (purchaseStatus === 'pending') {
       return (
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-amber-400">
+        <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 border-2 border-amber-400">
           <div className="flex items-center justify-center mb-4">
             <span className="px-4 py-1 bg-amber-100 text-amber-700 rounded-full text-sm font-bold">
               ⏳ Pago en Revisión
@@ -311,26 +311,26 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h3 className="text-lg font-bold text-gray-900 mb-1" style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}>
               Pago en Verificación
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600" style={{ wordBreak: 'break-word' }}>
               Ya enviaste tu comprobante. Estamos verificando tu pago.
             </p>
           </div>
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-4">
             <ul className="space-y-2 text-sm text-amber-800">
               <li className="flex items-start gap-2">
-                <span className="font-bold mt-0.5">→</span>
-                <span>La verificación toma <strong>24-48 horas hábiles</strong></span>
+                <span className="font-bold mt-0.5 flex-shrink-0">→</span>
+                <span style={{ wordBreak: 'break-word' }}>La verificación toma <strong>24-48 horas hábiles</strong></span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="font-bold mt-0.5">→</span>
-                <span>Recibirás un email cuando sea aprobado</span>
+                <span className="font-bold mt-0.5 flex-shrink-0">→</span>
+                <span style={{ wordBreak: 'break-word' }}>Recibirás un email cuando sea aprobado</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="font-bold mt-0.5">→</span>
-                <span>No es necesario enviar el comprobante de nuevo</span>
+                <span className="font-bold mt-0.5 flex-shrink-0">→</span>
+                <span style={{ wordBreak: 'break-word' }}>No es necesario enviar el comprobante de nuevo</span>
               </li>
             </ul>
           </div>
@@ -346,7 +346,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
 
     if (purchaseStatus === 'rejected') {
       return (
-        <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-red-400">
+        <div className="bg-white rounded-2xl shadow-xl p-5 sm:p-6 border-2 border-red-400">
           <div className="flex items-center justify-center mb-4">
             <span className="px-4 py-1 bg-red-100 text-red-700 rounded-full text-sm font-bold">
               ❌ Pago Rechazado
@@ -358,10 +358,10 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </div>
-            <h3 className="text-lg font-bold text-gray-900 mb-1" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <h3 className="text-lg font-bold text-gray-900 mb-1" style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}>
               Tu pago fue rechazado
             </h3>
-            <p className="text-sm text-gray-600">
+            <p className="text-sm text-gray-600" style={{ wordBreak: 'break-word' }}>
               El comprobante que enviaste no pudo ser verificado.
             </p>
           </div>
@@ -370,20 +370,20 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             <p className="text-xs font-bold text-red-800 mb-2">Razones comunes de rechazo:</p>
             <ul className="space-y-1 text-xs text-red-700">
               <li className="flex items-start gap-2">
-                <span className="mt-0.5">→</span>
-                <span>El comprobante no es legible o está incompleto</span>
+                <span className="mt-0.5 flex-shrink-0">→</span>
+                <span style={{ wordBreak: 'break-word' }}>El comprobante no es legible o está incompleto</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="mt-0.5">→</span>
-                <span>El monto no corresponde al precio del curso</span>
+                <span className="mt-0.5 flex-shrink-0">→</span>
+                <span style={{ wordBreak: 'break-word' }}>El monto no corresponde al precio del curso</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="mt-0.5">→</span>
-                <span>Los datos del destinatario no coinciden</span>
+                <span className="mt-0.5 flex-shrink-0">→</span>
+                <span style={{ wordBreak: 'break-word' }}>Los datos del destinatario no coinciden</span>
               </li>
               <li className="flex items-start gap-2">
-                <span className="mt-0.5">→</span>
-                <span>El comprobante ya fue usado anteriormente</span>
+                <span className="mt-0.5 flex-shrink-0">→</span>
+                <span style={{ wordBreak: 'break-word' }}>El comprobante ya fue usado anteriormente</span>
               </li>
             </ul>
           </div>
@@ -414,7 +414,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-gray-100">
         
         <div 
-          className="px-6 py-6 text-center text-white relative overflow-hidden"
+          className="px-5 sm:px-6 py-6 text-center text-white relative overflow-hidden"
           style={{ 
             background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
             backgroundColor: '#FF6B6B'
@@ -439,7 +439,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
           </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-5 sm:p-6">
 
           <button
             onClick={() => onNavigate('checkout', { courseId: String(course.id) })}
@@ -460,7 +460,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                   </svg>
                 </div>
-                <span className="font-medium">{text}</span>
+                <span className="font-medium" style={{ wordBreak: 'break-word' }}>{text}</span>
               </div>
             ))}
           </div>
@@ -487,13 +487,16 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 w-full overflow-x-hidden">
+    <div 
+      className="min-h-screen bg-gray-50 w-full overflow-x-hidden"
+      style={{ maxWidth: '100vw' }}
+    >
 
       {/* ═══════════════════════════════════════════════════════════════
           BREADCRUMB
       ═══════════════════════════════════════════════════════════════ */}
-      <div className="bg-white border-b">
-        <div className="max-w-7xl mx-auto px-4 py-4">
+      <div className="bg-white border-b w-full overflow-x-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center text-sm text-gray-600 flex-wrap gap-1">
             <button onClick={() => onNavigate('home')} style={breadcrumbButtonStyle} className="hover:text-[#FF6B6B]">
               Inicio
@@ -503,81 +506,126 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
               Cursos
             </button>
             <span className="text-gray-400">/</span>
-            <span className="text-gray-900 truncate max-w-[200px] sm:max-w-none">{course.title}</span>
+            <span 
+              className="text-gray-900 truncate" 
+              style={{ maxWidth: '180px', wordBreak: 'break-word' }}
+            >
+              {course.title}
+            </span>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 py-6 sm:py-8">
-        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8 w-full overflow-x-hidden">
+        <div className="grid lg:grid-cols-3 gap-6 lg:gap-8 w-full">
 
           {/* Contenido principal */}
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 w-full min-w-0 overflow-hidden">
 
-            {/* Trailer */}
-            <div className="bg-black rounded-2xl overflow-hidden shadow-xl mb-6 sm:mb-8 aspect-video w-full">
+            {/* ═══════════════════════════════════════════════════════════════
+                TRAILER - IFRAME CON PROTECCIÓN ANTI-DESBORDAMIENTO
+            ═══════════════════════════════════════════════════════════════ */}
+            <div 
+              className="bg-black rounded-2xl overflow-hidden shadow-xl mb-6 sm:mb-8 w-full"
+              style={{ 
+                position: 'relative',
+                paddingBottom: '56.25%', // Aspect ratio 16:9
+                height: 0,
+                maxWidth: '100%',
+              }}
+            >
               <iframe
                 src={course.trailerUrl}
-                className="w-full h-full"
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  border: 0,
+                  maxWidth: '100%',
+                }}
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
                 title={`Trailer ${course.title}`}
-              ></iframe>
+              />
             </div>
 
             {/* Info del curso */}
-            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4" style={{ fontFamily: "'Playfair Display', serif" }}>
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8 w-full overflow-hidden">
+              <h1 
+                className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4" 
+                style={{ 
+                  fontFamily: "'Playfair Display', serif",
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  hyphens: 'auto',
+                }}
+              >
                 {course.title}
               </h1>
               <div className="flex flex-wrap items-center gap-3 sm:gap-6 text-sm text-gray-600 mb-6">
                 <div className="flex items-center">
-                  <svg className="w-5 h-5 text-yellow-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                  <svg className="w-5 h-5 text-yellow-500 mr-1 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                   <span className="font-semibold">{course.rating}</span>
                   <span className="ml-1">({course.reviewsCount} reseñas)</span>
                 </div>
                 <div className="flex items-center">
-                  <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                   </svg>
                   <span>{course.studentsCount} estudiantes</span>
                 </div>
                 <div className="flex items-center">
-                  <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                   <span>{course.duration} de contenido</span>
                 </div>
                 <div className="flex items-center">
-                  <svg className="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-5 h-5 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                   <span>{totalLessons} lecciones</span>
                 </div>
               </div>
-              <p className="text-base sm:text-lg text-gray-700 leading-relaxed">{course.fullDescription}</p>
+              <p 
+                className="text-base sm:text-lg text-gray-700 leading-relaxed" 
+                style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+              >
+                {course.fullDescription}
+              </p>
             </div>
 
             {/* Qué aprenderás */}
-            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>¿Qué aprenderás?</h2>
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8 w-full overflow-hidden">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}>
+                ¿Qué aprenderás?
+              </h2>
               <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                 {course.whatYouLearn.map((item, idx) => (
                   <div key={idx} className="flex items-start">
                     <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-500 mr-2 sm:mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                     </svg>
-                    <span className="text-sm sm:text-base text-gray-700">{item}</span>
+                    <span 
+                      className="text-sm sm:text-base text-gray-700"
+                      style={{ wordBreak: 'break-word', overflowWrap: 'break-word', minWidth: 0 }}
+                    >
+                      {item}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Contenido del curso */}
-            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Contenido del Curso</h2>
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8 w-full overflow-hidden">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}>
+                Contenido del Curso
+              </h2>
               <div className="space-y-3">
                 {course.modules.map((module) => (
                   <div key={module.id} className="border border-gray-200 rounded-lg overflow-hidden">
@@ -590,7 +638,12 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                         <svg className={`w-5 h-5 transition-transform flex-shrink-0 ${openModules.includes(module.id) ? 'rotate-90' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                         </svg>
-                        <span className="font-semibold text-gray-900 text-sm sm:text-base text-left truncate">{module.title}</span>
+                        <span 
+                          className="font-semibold text-gray-900 text-sm sm:text-base text-left"
+                          style={{ wordBreak: 'break-word', overflowWrap: 'break-word', minWidth: 0 }}
+                        >
+                          {module.title}
+                        </span>
                       </div>
                       <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap flex-shrink-0">{module.lessons.length} lecc.</span>
                     </button>
@@ -603,7 +656,12 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
-                              <span className="text-sm sm:text-base text-gray-700 truncate">{lesson.title}</span>
+                              <span 
+                                className="text-sm sm:text-base text-gray-700 truncate"
+                                style={{ minWidth: 0 }}
+                              >
+                                {lesson.title}
+                              </span>
                             </div>
                             <span className="text-xs sm:text-sm text-gray-500 whitespace-nowrap flex-shrink-0">{lesson.duration}</span>
                           </div>
@@ -616,23 +674,32 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             </div>
 
             {/* Qué incluye */}
-            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Qué incluye este curso</h2>
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 mb-6 sm:mb-8 w-full overflow-hidden">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}>
+                Qué incluye este curso
+              </h2>
               <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                 {course.includes.map((item, idx) => (
                   <div key={idx} className="flex items-start">
                     <svg className="w-5 h-5 sm:w-6 sm:h-6 text-[#FF6B6B] mr-2 sm:mr-3 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-sm sm:text-base text-gray-700">{item}</span>
+                    <span 
+                      className="text-sm sm:text-base text-gray-700"
+                      style={{ wordBreak: 'break-word', overflowWrap: 'break-word', minWidth: 0 }}
+                    >
+                      {item}
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Instructora */}
-            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8">
-              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>Tu Instructora</h2>
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 w-full overflow-hidden">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}>
+                Tu Instructora
+              </h2>
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
                 {!imgError ? (
                   <img
@@ -649,9 +716,14 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                     👩‍🍳
                   </div>
                 )}
-                <div className="text-center sm:text-left flex-1">
-                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>Chef Karolain Rondón</h3>
-                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
+                <div className="text-center sm:text-left flex-1 min-w-0">
+                  <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2" style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}>
+                    Chef Karolain Rondón
+                  </h3>
+                  <p 
+                    className="text-sm sm:text-base text-gray-600 leading-relaxed"
+                    style={{ wordBreak: 'break-word', overflowWrap: 'break-word' }}
+                  >
                     Chef pastelera venezolana con 15 años de experiencia (8 profesional).
                     Graduada del Instituto Venezolano Gastronómico (2018) y formada en
                     hoteles como Pestana Caracas, Altamira Village y Waldorf. Enseña con
@@ -669,14 +741,14 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
           </div>
 
           {/* Panel lateral */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 w-full min-w-0">
             <div className="lg:sticky lg:top-24">
               {renderSidePanel()}
 
               {/* ═══════════════════════════════════════════════════════════════
-                  COMPARTIR (AHORA SÍ FUNCIONA)
+                  COMPARTIR
               ═══════════════════════════════════════════════════════════════ */}
-              <div className="mt-6 bg-white rounded-2xl shadow-md p-5">
+              <div className="mt-6 bg-white rounded-2xl shadow-md p-5 w-full overflow-hidden">
                 <p className="text-sm text-gray-600 mb-4 text-center font-medium">
                   📢 Comparte este curso:
                 </p>
