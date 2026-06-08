@@ -58,6 +58,54 @@ const primaryGradientButton: React.CSSProperties = {
   fontFamily: "'Montserrat', sans-serif",
 };
 
+// 🆕 BOTÓN VERDE WHATSAPP (estilo de CheckoutPage)
+const whatsappButtonStyle: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '12px',
+  width: '100%',
+  padding: '18px 24px',
+  backgroundColor: '#25D366',
+  color: '#ffffff',
+  fontWeight: 700,
+  borderRadius: '16px',
+  fontSize: '17px',
+  textDecoration: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  boxShadow: '0 10px 25px -5px rgba(37, 211, 102, 0.4)',
+  transition: 'all 0.3s',
+  fontFamily: "'Montserrat', sans-serif",
+  minHeight: '56px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+};
+
+// 🆕 BOTÓN VERDE WHATSAPP COMPACTO (para sidebar)
+const whatsappCompactButton: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  gap: '8px',
+  width: '100%',
+  padding: '14px 20px',
+  backgroundColor: '#25D366',
+  color: '#ffffff',
+  fontWeight: 600,
+  borderRadius: '12px',
+  fontSize: '15px',
+  textDecoration: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  boxShadow: '0 4px 12px -2px rgba(37, 211, 102, 0.3)',
+  transition: 'all 0.3s',
+  fontFamily: "'Montserrat', sans-serif",
+  minHeight: '48px',
+  WebkitAppearance: 'none',
+  appearance: 'none',
+};
+
 const amberButtonStyle: React.CSSProperties = {
   display: 'flex',
   alignItems: 'center',
@@ -122,7 +170,6 @@ const accordionButtonStyle: React.CSSProperties = {
   fontFamily: "'Montserrat', sans-serif",
 };
 
-// ── Botones de redes sociales (compartir) ──────────────────────
 const socialButtonStyle = (bgColor: string): React.CSSProperties => ({
   width: '44px',
   height: '44px',
@@ -146,6 +193,13 @@ const socialButtonStyle = (bgColor: string): React.CSSProperties => ({
 // ═══════════════════════════════════════════════════════════════════
 const INSTAGRAM_URL = 'https://instagram.com/comeback.pasteleria';
 const WHATSAPP_NUMBER = '584241055470';
+
+// Icono WhatsApp reutilizable
+const WhatsAppIcon = ({ size = 24 }: { size?: number }) => (
+  <svg style={{ width: `${size}px`, height: `${size}px`, flexShrink: 0 }} fill="currentColor" viewBox="0 0 24 24">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+  </svg>
+);
 
 export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
   const course = getCourseBySlug(slug);
@@ -216,16 +270,21 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
   const totalLessons = course.modules.reduce((acc, mod) => acc + mod.lessons.length, 0);
 
   // ═══════════════════════════════════════════════════════════════════
-  // FUNCIONES DE COMPARTIR
+  // FUNCIONES DE COMPARTIR Y WHATSAPP
   // ═══════════════════════════════════════════════════════════════════
   const currentUrl = typeof window !== 'undefined' ? window.location.href : '';
 
+  // 🆕 Mensaje para comprar el curso por WhatsApp
+  const buyWhatsAppMessage = encodeURIComponent(
+    `¡Hola Chef Karolain! 👋\n\nEstoy interesado/a en inscribirme en el curso:\n\n📚 *${course.title}*\n💰 Precio: $${course.price} ${course.currency}\n\n¿Me puedes indicar cómo realizar el pago? 😊`
+  );
+  const buyWhatsAppUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${buyWhatsAppMessage}`;
+
+  // Compartir
   const shareWhatsAppMessage = encodeURIComponent(
     `¡Mira este curso de pastelería de Chef Karolain Rondón! 🍰\n\n${course.title}\n\n${currentUrl}`
   );
-
   const shareWhatsAppUrl = `https://wa.me/?text=${shareWhatsAppMessage}`;
-
   const shareFacebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`;
 
   const handleCopyLink = async () => {
@@ -409,10 +468,13 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
       );
     }
 
-    // Sin compra
+    // ═══════════════════════════════════════════════════════════════════
+    // PANEL DE COMPRA (Sin compra) - REDISEÑADO PROFESIONAL
+    // ═══════════════════════════════════════════════════════════════════
     return (
       <div className="bg-white rounded-2xl shadow-xl overflow-hidden border-2 border-gray-100">
         
+        {/* Header con precio */}
         <div 
           className="px-5 sm:px-6 py-6 text-center text-white relative overflow-hidden"
           style={{ 
@@ -441,6 +503,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
 
         <div className="p-5 sm:p-6">
 
+          {/* 🆕 BOTÓN PRINCIPAL: COMPRAR AHORA (va al checkout) */}
           <button
             onClick={() => onNavigate('checkout', { courseId: String(course.id) })}
             style={primaryGradientButton}
@@ -448,10 +511,31 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             🛒 Comprar Ahora
           </button>
 
+          {/* 🆕 SEPARADOR ELEGANTE */}
+          <div className="flex items-center my-4">
+            <div className="flex-1 border-t border-gray-200"></div>
+            <span className="px-3 text-xs text-gray-400 font-medium uppercase tracking-wider">
+              o
+            </span>
+            <div className="flex-1 border-t border-gray-200"></div>
+          </div>
+
+          {/* 🆕 BOTÓN VERDE WHATSAPP - Contacto directo */}
+          <a
+            href={buyWhatsAppUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={whatsappCompactButton}
+          >
+            <WhatsAppIcon size={20} />
+            <span>Escribir a la Chef</span>
+          </a>
+
           <p className="text-xs text-center text-gray-500 mt-3 mb-6">
             ✓ Pago 100% seguro · Garantía total
           </p>
 
+          {/* Beneficios */}
           <div className="space-y-3 text-sm text-gray-700 mb-6">
             {['Acceso inmediato tras confirmación', 'Sin límite de tiempo', 'Certificado de finalización', 'Actualizaciones gratuitas'].map((text, i) => (
               <div key={i} className="flex items-center">
@@ -465,6 +549,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             ))}
           </div>
 
+          {/* Métodos de pago */}
           <div className="border-t border-gray-100 pt-4">
             <p className="text-xs text-gray-500 text-center mb-2">
               Métodos de pago aceptados
@@ -492,9 +577,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
       style={{ maxWidth: '100vw' }}
     >
 
-      {/* ═══════════════════════════════════════════════════════════════
-          BREADCRUMB
-      ═══════════════════════════════════════════════════════════════ */}
+      {/* BREADCRUMB */}
       <div className="bg-white border-b w-full overflow-x-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center text-sm text-gray-600 flex-wrap gap-1">
@@ -522,14 +605,12 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
           {/* Contenido principal */}
           <div className="lg:col-span-2 w-full min-w-0 overflow-hidden">
 
-            {/* ═══════════════════════════════════════════════════════════════
-                TRAILER - IFRAME CON PROTECCIÓN ANTI-DESBORDAMIENTO
-            ═══════════════════════════════════════════════════════════════ */}
+            {/* TRAILER */}
             <div 
               className="bg-black rounded-2xl overflow-hidden shadow-xl mb-6 sm:mb-8 w-full"
               style={{ 
                 position: 'relative',
-                paddingBottom: '56.25%', // Aspect ratio 16:9
+                paddingBottom: '56.25%',
                 height: 0,
                 maxWidth: '100%',
               }}
@@ -696,7 +777,7 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             </div>
 
             {/* Instructora */}
-            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 w-full overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-md p-5 sm:p-8 w-full overflow-hidden mb-6 sm:mb-8">
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6" style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}>
                 Tu Instructora
               </h2>
@@ -738,6 +819,136 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                 </div>
               </div>
             </div>
+
+            {/* ═══════════════════════════════════════════════════════════════
+                🆕 SECCIÓN CTA FINAL - PROFESIONAL Y ELEGANTE
+            ═══════════════════════════════════════════════════════════════ */}
+            {purchaseStatus !== 'approved' && (
+              <div 
+                className="rounded-3xl overflow-hidden shadow-2xl relative w-full"
+                style={{
+                  background: 'linear-gradient(135deg, #1F2937 0%, #111827 100%)',
+                  backgroundColor: '#1F2937',
+                }}
+              >
+                {/* Elementos decorativos */}
+                <div 
+                  className="absolute top-0 right-0 w-64 h-64 rounded-full -mr-32 -mt-32 opacity-20"
+                  style={{ background: 'linear-gradient(135deg, #FF6B6B, #F59E0B)' }}
+                ></div>
+                <div 
+                  className="absolute bottom-0 left-0 w-48 h-48 rounded-full -ml-24 -mb-24 opacity-20"
+                  style={{ background: 'linear-gradient(135deg, #25D366, #128C7E)' }}
+                ></div>
+
+                <div className="relative z-10 p-6 sm:p-8 lg:p-10 text-center">
+                  
+                  {/* Badge superior */}
+                  <div className="inline-flex items-center gap-2 bg-green-500/20 border border-green-400/30 rounded-full px-4 py-2 mb-5">
+                    <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                    <span className="text-xs sm:text-sm font-semibold text-green-300">
+                      Atención personalizada disponible
+                    </span>
+                  </div>
+
+                  {/* Título */}
+                  <h2 
+                    className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white mb-4 leading-tight"
+                    style={{ fontFamily: "'Playfair Display', serif", wordBreak: 'break-word' }}
+                  >
+                    ¿Listo para comenzar tu{' '}
+                    <span 
+                      style={{
+                        background: 'linear-gradient(135deg, #FF6B6B 0%, #F59E0B 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        color: '#FF6B6B',
+                      }}
+                    >
+                      transformación?
+                    </span>
+                  </h2>
+
+                  {/* Descripción */}
+                  <p 
+                    className="text-base sm:text-lg text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed"
+                    style={{ wordBreak: 'break-word' }}
+                  >
+                    Habla directamente con la Chef Karolain por WhatsApp.
+                    Te guiará personalmente para que comiences tu camino en la repostería profesional.
+                  </p>
+
+                  {/* Info de la Chef */}
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-5 mb-6 max-w-md mx-auto border border-white/20">
+                    <div className="flex items-center justify-center gap-3 sm:gap-4">
+                      {!imgError ? (
+                        <img
+                          src="/yulia/foto2.jpg"
+                          alt="Chef Karolain"
+                          className="w-12 h-12 sm:w-14 sm:h-14 rounded-full object-cover shadow-lg border-2 border-white/30 flex-shrink-0"
+                        />
+                      ) : (
+                        <div 
+                          className="w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-2xl shadow-lg border-2 border-white/30 flex-shrink-0"
+                          style={{ background: 'linear-gradient(135deg, #FF6B6B, #F59E0B)' }}
+                        >
+                          👩‍🍳
+                        </div>
+                      )}
+                      <div className="text-left min-w-0">
+                        <p className="text-white font-bold text-sm sm:text-base" style={{ fontFamily: "'Playfair Display', serif" }}>
+                          Chef Karolain Rondón
+                        </p>
+                        <div className="flex items-center gap-1">
+                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                          <p className="text-xs text-green-300 font-medium">
+                            En línea ahora
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* BOTÓN VERDE WHATSAPP GRANDE */}
+                  <a
+                    href={buyWhatsAppUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      ...whatsappButtonStyle,
+                      maxWidth: '420px',
+                      margin: '0 auto',
+                    }}
+                  >
+                    <WhatsAppIcon size={26} />
+                    <span>Comunícate con la Chef</span>
+                  </a>
+
+                  {/* Texto bajo el botón */}
+                  <p className="text-xs sm:text-sm text-gray-400 mt-4">
+                    📱 Se abrirá WhatsApp con un mensaje listo para enviar
+                  </p>
+
+                  {/* Beneficios rápidos */}
+                  <div className="grid grid-cols-3 gap-3 sm:gap-4 mt-8 pt-6 border-t border-white/10">
+                    <div className="text-center">
+                      <div className="text-2xl sm:text-3xl mb-1">⚡</div>
+                      <p className="text-[10px] sm:text-xs text-gray-300 font-medium">Respuesta<br/>rápida</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl sm:text-3xl mb-1">🔒</div>
+                      <p className="text-[10px] sm:text-xs text-gray-300 font-medium">Pago<br/>seguro</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-2xl sm:text-3xl mb-1">💯</div>
+                      <p className="text-[10px] sm:text-xs text-gray-300 font-medium">Acceso<br/>de por vida</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
           </div>
 
           {/* Panel lateral */}
@@ -745,16 +956,12 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
             <div className="lg:sticky lg:top-24">
               {renderSidePanel()}
 
-              {/* ═══════════════════════════════════════════════════════════════
-                  COMPARTIR
-              ═══════════════════════════════════════════════════════════════ */}
+              {/* COMPARTIR */}
               <div className="mt-6 bg-white rounded-2xl shadow-md p-5 w-full overflow-hidden">
                 <p className="text-sm text-gray-600 mb-4 text-center font-medium">
                   📢 Comparte este curso:
                 </p>
                 <div className="flex justify-center gap-3 flex-wrap">
-                  
-                  {/* WhatsApp */}
                   <a
                     href={shareWhatsAppUrl}
                     target="_blank"
@@ -763,12 +970,9 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                     title="Compartir por WhatsApp"
                     aria-label="Compartir por WhatsApp"
                   >
-                    <svg style={{ width: '20px', height: '20px' }} fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.890-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                    </svg>
+                    <WhatsAppIcon size={20} />
                   </a>
 
-                  {/* Instagram */}
                   <a
                     href={INSTAGRAM_URL}
                     target="_blank"
@@ -782,7 +986,6 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                     </svg>
                   </a>
 
-                  {/* Facebook */}
                   <a
                     href={shareFacebookUrl}
                     target="_blank"
@@ -796,7 +999,6 @@ export function CourseDetailPage({ slug, onNavigate }: CourseDetailPageProps) {
                     </svg>
                   </a>
 
-                  {/* Copiar enlace */}
                   <button
                     onClick={handleCopyLink}
                     style={socialButtonStyle(copiedLink ? '#10B981' : '#6b7280')}
